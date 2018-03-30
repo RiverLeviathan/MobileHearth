@@ -10,7 +10,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ladysnake.mobile.tools.ApiAware;
@@ -35,22 +37,35 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
     public static class State{
         protected TextInputEditText nameInput;
         protected ImageButton nameSubmit;
+        protected Spinner classeSpinner, typeSpinner, factionSpinner, raceSpinner;
 
-        public State(TextInputEditText i, ImageButton b){
+        public State(TextInputEditText i, ImageButton b, Spinner c, Spinner t, Spinner f, Spinner r){
             this.nameInput = i;
             this.nameSubmit = b;
+            this.classeSpinner = c;
+            this.typeSpinner = t;
+            this.factionSpinner = f;
+            this.raceSpinner = r;
         }
-        public State(View i, View b){
+        public State(View i, View b, View c, View t, View f, View r){
             this(
                 ((TextInputEditText) i),
-                ((ImageButton) b)
+                ((ImageButton) b),
+                ((Spinner) c),
+                ((Spinner) t),
+                ((Spinner) f),
+                ((Spinner) r)
             );
         }
-        public static State from(TextInputEditText i, ImageButton b){ return new State(i, b); }
-        public static State from(View i, View b){ return new State(i, b); }
+        public static State from(TextInputEditText i, ImageButton b, Spinner c, Spinner t, Spinner f, Spinner r){ return new State(i, b, c, t, f, r); }
+        public static State from(View i, View b, View c, View t, View f, View r){ return new State(i, b, c, t, f, r); }
 
         public TextInputEditText getNameInput() { return nameInput; }
         public ImageButton getNameSubmitButton() { return nameSubmit; }
+        public Spinner getClasseSpinner() { return classeSpinner; }
+        public Spinner getTypeSpinner() { return typeSpinner; }
+        public Spinner getFactionSpinner() { return factionSpinner; }
+        public Spinner getRaceSpinner() { return raceSpinner; }
     }
 
     protected State state;
@@ -61,7 +76,11 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         View view = inflater.inflate(R.layout.search_view, null);
         this.state = State.from(
             view.findViewById(R.id.nameInput),
-            view.findViewById(R.id.nameSubmit)
+            view.findViewById(R.id.nameSubmit),
+            view.findViewById(R.id.classeSpinner),
+            view.findViewById(R.id.typeSpinner),
+            view.findViewById(R.id.factionSpinner),
+            view.findViewById(R.id.raceSpinner)
         );
         view.setTag(this.state);
 
@@ -71,6 +90,10 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
 
     protected void setupView(State state) {
         setupNameSearch(state);
+        setupClassSearch(state);
+        setupTypeSearch(state);
+        setupFactionSearch(state);
+        setupRaceSearch(state);
     }
 
     protected void setupNameSearch(State state) {
@@ -112,4 +135,59 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
             });
         });
     }
+
+    protected void setupClassSearch(State state){
+        Spinner classeSpinner = state.getClasseSpinner();
+        classeSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, CLASSES));
+    }
+
+    protected void setupTypeSearch(State state) {
+        Spinner typeSpinner = state.getTypeSpinner();
+        typeSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, TYPES));
+    }
+
+    private void setupFactionSearch(State state) {
+        Spinner factionSpinner = state.getFactionSpinner();
+        factionSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, FACTIONS));
+    }
+
+    private void setupRaceSearch(State state) {
+        Spinner raceSpinner = state.getRaceSpinner();
+        raceSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, RACES));
+    }
+
+
+    public final static String[] CLASSES = new String[]{
+            "Druid",
+            "Hunter",
+            "Mage",
+            "Paladin",
+            "Priest",
+            "Rogue",
+            "Shaman",
+            "Warlock",
+            "Warrior",
+            "Death Knight"
+    };
+
+    public final static String[] TYPES = new String[]{
+            "Minion",
+            "Spell",
+            "Weapon",
+            "Hero"
+    };
+
+    public final static String[] FACTIONS = new String[]{};
+
+    public final static String[] RACES = new String[]{
+            "Beast",
+            "Demon",
+            "Dragon",
+            "Elemental",
+            "Mech",
+            "Murloc",
+            "Pirate",
+            "Totem",
+            "General"
+    };
 }
