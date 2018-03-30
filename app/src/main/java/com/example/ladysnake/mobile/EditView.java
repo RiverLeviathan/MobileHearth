@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ListView;
 
 import com.example.ladysnake.mobile.tools.ResourceAwareFragment;
 
@@ -18,28 +18,30 @@ public class EditView extends ResourceAwareFragment {
     public static EditView make(){ return new EditView(); }
 
     public static class State{
-//        protected Button btn;
-//
-//        public State(Button b){
-//            this.btn = b;
-//        }
-//        public State(View b){
-//            this(
-//                    (Button)(b)
-//            );
-//        }
-//        public static State from(Button b){ return new State(b); }
-//        public static State from(View b){ return new State(b); }
+        protected ListView decklist;
+
+        public State(ListView decklist){
+            this.decklist = decklist;
+        }
+        public State(View decklist){
+            this((ListView) (decklist));
+        }
+        public static State from(ListView decklist){ return new State(decklist); }
+        public static State from(View decklist){ return new State(decklist); }
     }
+
+    protected State state;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_view, null);
-//        State state = State.from(
-//            view.findViewById(R.id.editBtn)
-//        );
-//        view.setTag(state);
+        this.state = State.from(view.findViewById(R.id.decklist));
+        view.setTag(state);
         return view;
+    }
+
+    public void setupView(State state) {
+
     }
 }
