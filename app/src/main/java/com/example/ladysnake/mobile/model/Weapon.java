@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
  * Created by Ludwig on 25/03/2018.
  */
 
+//TODO: Check in API if there's damage
 public class Weapon extends Card {
     protected int damage, durability;
 
