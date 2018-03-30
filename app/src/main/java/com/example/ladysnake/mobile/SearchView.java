@@ -26,6 +26,9 @@ import java.nio.charset.Charset;
 public class SearchView extends ResourceAwareFragment implements ApiAware{
     public static String TAG = "SearchView";
 
+    String api(String uri){
+        return getContext().getString(R.string.api) + uri;
+    }
 
     public static SearchView make(){ return new SearchView(); }
 
