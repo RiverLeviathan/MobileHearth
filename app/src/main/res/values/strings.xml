@@ -7,4 +7,5 @@
     <string name="apiCredential">9soVmGNNgSmshdGefufaLZp9tYUap11L88gjsnpzXpNhEdQMXG</string>
     <string name="apiCredentialHeader">X-Mashape-Key</string>
     <string name="api_fail">Erreur lors de la requête à l\'API</string>
+    <string name="work_in_progress">Work in progress ...</string>
 </resources>

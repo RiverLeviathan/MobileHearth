@@ -10,16 +10,14 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.ladysnake.mobile.tools.ApiAware;
-import com.google.gson.JsonArray;
+import com.example.ladysnake.mobile.tools.ResourceAwareFragment;
 import com.koushikdutta.ion.Ion;
 
 import java.nio.charset.Charset;
-import java.util.Locale;
 
 /**
  * Created by Ludwig on 24/03/2018.
