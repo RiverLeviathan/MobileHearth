@@ -16,4 +16,6 @@
     <string name="type">Type</string>
     <string name="faction">Faction</string>
     <string name="race">Race</string>
+    <string name="card_s_image">Card\'s image</string>
+    <string name="search_icon">search icon</string>
 </resources>

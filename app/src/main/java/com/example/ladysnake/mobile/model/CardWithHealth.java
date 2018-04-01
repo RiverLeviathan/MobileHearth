@@ -2,7 +2,11 @@ package com.example.ladysnake.mobile.model;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.JsonObject;
+
 public abstract class CardWithHealth extends Card{
+    public final static String HEALTH = "health";
+
     protected int health;
 
     public CardWithHealth(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull Integer health) {
@@ -11,6 +15,13 @@ public abstract class CardWithHealth extends Card{
     }
 
     public int getHealth(){ return this.health; }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject obj = super.toJson();
+        obj.addProperty(HEALTH, getHealth());
+        return obj;
+    }
 
     @Override
     public boolean equals(Object o) {

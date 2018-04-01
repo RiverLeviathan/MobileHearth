@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ladysnake.mobile.R;
@@ -18,24 +19,24 @@ import java.util.List;
 public class ResultListAdapter extends ArrayAdapter<Card> {
     public static class State{
         protected TextView textView;
-        protected ImageButton button;
+        protected ImageView icon;
 
-        public State(TextView t, ImageButton b){
+        public State(TextView t, ImageView i){
             this.textView = t;
-            this.button = b;
+            this.icon = i;
         }
 
-        public State(View t, View b){
+        public State(View t, View i){
             this(
                 (TextView) t,
-                (ImageButton)b
+                (ImageView)i
             );
         }
 
-        public static State from(TextView t, ImageButton b){ return new State(t, b); }
-        public static State from(View t, View b){ return new State(t, b); }
+        public static State from(TextView t, ImageView i){ return new State(t, i); }
+        public static State from(View t, View i){ return new State(t, i); }
 
-        public ImageButton getButton() { return button; }
+        public ImageView getIcon() { return icon; }
         public TextView getTextView() { return textView; }
     }
 
@@ -67,8 +68,8 @@ public class ResultListAdapter extends ArrayAdapter<Card> {
         if(row == null){
             row = LayoutInflater.from(getContext()).inflate(R.layout.list_item_result, null);
             state = State.from(
-                    row.findViewById(R.id.card_name),
-                    row.findViewById(R.id.show_card_details)
+                row.findViewById(R.id.card_name),
+                row.findViewById(R.id.show_card_details)
             );
             row.setTag(state);
         }else
@@ -76,6 +77,7 @@ public class ResultListAdapter extends ArrayAdapter<Card> {
 
         Card card = getItem(position);
         state.getTextView().setText(card.getName());
+        row.setClickable(true);
 
         return row;
     }

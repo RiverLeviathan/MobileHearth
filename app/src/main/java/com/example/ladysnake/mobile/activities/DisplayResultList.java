@@ -23,6 +23,7 @@ import java.util.List;
 
 public class DisplayResultList extends AppCompatActivity {
     public final static String TAG = "DisplayResultList";
+    public final static String CARD_EXTRA = "card";
 
     public static class State{
         protected ListView listView;
@@ -44,6 +45,7 @@ public class DisplayResultList extends AppCompatActivity {
 
     protected State state;
     protected JsonArray resultData;
+    protected ResultListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +81,21 @@ public class DisplayResultList extends AppCompatActivity {
                 cards.add(card);
         }
 
-        ResultListAdapter adapter = new ResultListAdapter(this, R.layout.list_item_result, cards);
-        listView.setAdapter(adapter);
+        this.adapter = new ResultListAdapter(this, R.layout.list_item_result, cards);
+        listView.setAdapter(this.adapter);
 
-        listView.setOnItemClickListener((parent, view, position, id) -> {
+        listView.setOnItemClickListener((parent, view, position, id) -> { //TODO: See why this fucker doesn't work
             //TODO: Go activity that will display the card's details
+            goShowDetails(this.adapter.getItem(position));
         });
+    }
+
+    protected void goShowDetails(Card card){
+        Log.v(TAG, "Going to show details of card: " + card.toJson().toString());
+        Intent intent = new Intent(this, DisplayCardDetails.class);
+//        intent.setAction(Intent.ACTION_VIEW);
+        Gson gson = new Gson();
+        intent.putExtra(CARD_EXTRA, gson.toJson(card.toJson()));
+        startActivity(intent);
     }
 }

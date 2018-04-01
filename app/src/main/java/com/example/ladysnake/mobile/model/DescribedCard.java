@@ -2,7 +2,11 @@ package com.example.ladysnake.mobile.model;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.JsonObject;
+
 public abstract class DescribedCard extends Card {
+    public final static String DESCRIPTION = "text";
+
     protected String description;
 
     public DescribedCard(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description) {
@@ -11,6 +15,13 @@ public abstract class DescribedCard extends Card {
     }
 
     public String getDescription() { return description; }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject obj = super.toJson();
+        obj.addProperty(DESCRIPTION, getDescription());
+        return obj;
+    }
 
     @Override
     public boolean equals(Object o) {

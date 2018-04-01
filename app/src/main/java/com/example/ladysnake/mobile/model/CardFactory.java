@@ -6,6 +6,7 @@ import android.util.Log;
 
 //import com.google.common.collect.BiMap;
 //import com.google.common.collect.HashBiMap;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.apache.commons.text.WordUtils;
@@ -60,8 +61,14 @@ public abstract class CardFactory {
     }
 
     @Nullable
+    public static Card from(@NonNull String json){
+        JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
+        return from(jsonObject);
+    }
+
+    @Nullable
     public static Card from(@NonNull JsonObject json){
-        Log.v(TAG, "Json: " + json.get("type").getAsString());
+//        Log.v(TAG, "Json: " + json.get("type").getAsString());
         final CardType type = CardType.from(json.get("type").getAsString());
         if(type == null)
             return null;
@@ -83,12 +90,12 @@ public abstract class CardFactory {
     @Nullable
     protected static Minion fromMinion(@NonNull JsonObject json){
         try{
-            String name = json.get("name").getAsString();
-            Integer manaCost = json.get("cost").getAsInt();
-            String description = json.get("text").getAsString();
-            String imgUrl = json.get("img").getAsString();
-            Integer damage = json.get("attack").getAsInt();
-            Integer health = json.get("health").getAsInt();
+            String name = json.get(Card.NAME).getAsString();
+            Integer manaCost = json.get(Card.MANA_COST).getAsInt();
+            String description = json.get(DescribedCard.DESCRIPTION).getAsString();
+            String imgUrl = json.get(Card.IMG_URL).getAsString();
+            Integer damage = json.get(Minion.DAMAGE).getAsInt();
+            Integer health = json.get(Minion.HEALTH).getAsInt();
 
             return Minion.from(name, manaCost, description, imgUrl, damage, health);
         }catch(Exception e){
@@ -99,10 +106,10 @@ public abstract class CardFactory {
     @Nullable
     protected static Spell fromSpell(@NonNull JsonObject json){
         try{
-            String name = json.get("name").getAsString();
-            Integer manaCost = json.get("cost").getAsInt();
-            String description = json.get("text").getAsString();
-            String imgUrl = json.get("img").getAsString();
+            String name = json.get(Card.NAME).getAsString();
+            Integer manaCost = json.get(Card.MANA_COST).getAsInt();
+            String description = json.get(DescribedCard.DESCRIPTION).getAsString();
+            String imgUrl = json.get(Card.IMG_URL).getAsString();
 
             return Spell.from(name, manaCost, description, imgUrl);
         }catch(Exception e){
@@ -113,11 +120,11 @@ public abstract class CardFactory {
     @Nullable
     protected static Weapon fromWeapon(@NonNull JsonObject json){
         try{
-            String name = json.get("name").getAsString();
-            Integer manaCost = json.get("cost").getAsInt();
-            String imgUrl = json.get("img").getAsString();
-            Integer damage = json.get("attack").getAsInt();
-            Integer durability = json.get("durability").getAsInt();
+            String name = json.get(Card.NAME).getAsString();
+            Integer manaCost = json.get(Card.MANA_COST).getAsInt();
+            String imgUrl = json.get(Card.IMG_URL).getAsString();
+            Integer damage = json.get(Weapon.DAMAGE).getAsInt();
+            Integer durability = json.get(Weapon.DURABILITY).getAsInt();
 
             return Weapon.from(name, manaCost, imgUrl, damage, durability);
         }catch(Exception e){
@@ -128,10 +135,10 @@ public abstract class CardFactory {
     @Nullable
     protected static Hero fromHero(@NonNull JsonObject json){
         try{
-            String name = json.get("name").getAsString();
-            Integer manaCost = json.get("cost").getAsInt();
-            String imgUrl = json.get("img").getAsString();
-            Integer health = json.get("health").getAsInt();
+            String name = json.get(Card.NAME).getAsString();
+            Integer manaCost = json.get(Card.MANA_COST).getAsInt();
+            String imgUrl = json.get(Card.IMG_URL).getAsString();
+            Integer health = json.get(CardWithHealth.HEALTH).getAsInt();
 
             return Hero.from(name, manaCost, imgUrl, health);
         }catch(Exception e){

@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -107,7 +108,7 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
     }
 
     protected String getTextInputValue(State state){
-        return state.getNameInput().getText().toString().toLowerCase();
+        return state.getNameInput().getText().toString().toLowerCase().trim();
     }
 
     protected boolean textInputHasValue(State state){
@@ -146,6 +147,7 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
 
     protected void goShowResults(JsonArray json){
         Intent intent = new Intent(getContext(), DisplayResultList.class);
+//        intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(JSON_ARRAY_EXTRA, json.toString());
 
         getContext().startActivity(intent);
@@ -202,24 +204,146 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         Log.v(TAG, "Setting up class search");
         Spinner classeSpinner = state.getClasseSpinner();
         classeSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, CLASSES));
+        classeSpinner.setPrompt("Sélectionnez une classe");
+
+        classeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean isFirst = true;
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(isFirst){
+                    isFirst = false;
+                    return;
+                }
+
+                String value = classeSpinner.getSelectedItem().toString();
+                String url = api("/cards/classes/%class%").replaceFirst("%class%", Uri.encode(value));
+                SearchView.this.dispatchRequest(state, url)
+                .then((e, json) -> {
+                    if(e != null) {
+                        Log.e(TAG, e.getMessage());
+                        Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    //TODO: (optional) search by name inside of result
+                    SearchView.this.goShowResults(json);
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     protected void setupTypeSearch(State state) {
         Log.v(TAG, "Setting up type search");
         Spinner typeSpinner = state.getTypeSpinner();
         typeSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, TYPES));
+        typeSpinner.setPrompt("Sélectionnez un type");
+
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean isFirst = true;
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(isFirst){
+                    isFirst = false;
+                    return;
+                }
+
+                String value = typeSpinner.getSelectedItem().toString();
+                String url = api("/cards/types/%type%").replaceFirst("%type%", Uri.encode(value));
+                SearchView.this.dispatchRequest(state, url)
+                        .then((e, json) -> {
+                            if(e != null) {
+                                Log.e(TAG, e.getMessage());
+                                Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            //TODO: (optional) search by name inside of result
+                            SearchView.this.goShowResults(json);
+                        });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     private void setupFactionSearch(State state) {
         Log.v(TAG, "Setting up faction search");
         Spinner factionSpinner = state.getFactionSpinner();
         factionSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, FACTIONS));
+        factionSpinner.setPrompt("Sélectionnez une faction");
+
+        factionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean isFirst = true;
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(isFirst){
+                    isFirst = false;
+                    return;
+                }
+
+
+                String value = factionSpinner.getSelectedItem().toString();
+                String url = api("/cards/factions/%faction%").replaceFirst("%faction%", Uri.encode(value));
+                SearchView.this.dispatchRequest(state, url)
+                        .then((e, json) -> {
+                            if(e != null) {
+                                Log.e(TAG, e.getMessage());
+                                Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            //TODO: (optional) search by name inside of result
+                            SearchView.this.goShowResults(json);
+                        });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     private void setupRaceSearch(State state) {
         Log.v(TAG, "Setting up race search");
         Spinner raceSpinner = state.getRaceSpinner();
         raceSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, RACES));
+        raceSpinner.setPrompt("Sélectionnez une race");
+
+        raceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean isFirst = true;
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(isFirst){
+                    isFirst = false;
+                    return;
+                }
+
+
+                String value = raceSpinner.getSelectedItem().toString();
+                String url = api("/cards/races/%race%").replaceFirst("%race%", Uri.encode(value));
+                SearchView.this.dispatchRequest(state, url)
+                        .then((e, json) -> {
+                            if(e != null) {
+                                Log.e(TAG, e.getMessage());
+                                Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            //TODO: (optional) search by name inside of result
+                            SearchView.this.goShowResults(json);
+                        });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
 

@@ -2,11 +2,16 @@ package com.example.ladysnake.mobile.model;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.JsonObject;
+
 /**
  * Created by Ludwig on 25/03/2018.
  */
 
 public class Minion extends DescribedCard {
+    public final static String DAMAGE = "attack";
+    public final static String HEALTH = "health";
+
     protected int damage, health;
 
     public Minion(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description, @NonNull Integer damage, @NonNull Integer health) {
@@ -18,6 +23,15 @@ public class Minion extends DescribedCard {
 
     public int getDamage() { return damage; }
     public int getHealth() { return health; }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject obj = super.toJson();
+        obj.addProperty(DAMAGE, getDamage());
+        obj.addProperty(HEALTH, getHealth());
+        obj.addProperty(Card.TYPE, CardFactory.CardType.MINION.toString());
+        return obj;
+    }
 
     @NonNull
     public static Minion from(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description, @NonNull Integer damage, @NonNull Integer health){
