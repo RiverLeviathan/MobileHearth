@@ -5,10 +5,13 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
+//        classpath 'gradle.plugin.me.tatarka.retrolambda:3.7.0'
         
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -16,11 +19,15 @@ buildscript {
     }
 }
 
+//apply plugin: 'me.tatarka.retrolambda'
+
 allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
 }
 

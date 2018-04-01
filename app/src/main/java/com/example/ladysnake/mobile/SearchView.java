@@ -1,7 +1,9 @@
 package com.example.ladysnake.mobile;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
@@ -15,18 +17,27 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.ladysnake.mobile.activities.DisplayResultList;
 import com.example.ladysnake.mobile.tools.ApiAware;
 import com.example.ladysnake.mobile.tools.ResourceAwareFragment;
+import com.google.gson.JsonArray;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.builder.Builders;
+import com.koushikdutta.ion.builder.LoadBuilder;
+import com.koushikdutta.ion.future.ResponseFuture;
 
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by Ludwig on 24/03/2018.
  */
 
 public class SearchView extends ResourceAwareFragment implements ApiAware{
-    public static String TAG = "SearchView";
+    public final static String TAG = "SearchView";
+    public final static String JSON_ARRAY_EXTRA = "JsonObject";
 
     String api(String uri){
         return getContext().getString(R.string.api) + uri;
@@ -35,11 +46,13 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
     public static SearchView make(){ return new SearchView(); }
 
     public static class State{
+        protected LoadBuilder<Builders.Any.B> httpClient;
         protected TextInputEditText nameInput;
         protected ImageButton nameSubmit;
         protected Spinner classeSpinner, typeSpinner, factionSpinner, raceSpinner;
 
-        public State(TextInputEditText i, ImageButton b, Spinner c, Spinner t, Spinner f, Spinner r){
+        public State(LoadBuilder<Builders.Any.B> http, TextInputEditText i, ImageButton b, Spinner c, Spinner t, Spinner f, Spinner r){
+            this.httpClient = http;
             this.nameInput = i;
             this.nameSubmit = b;
             this.classeSpinner = c;
@@ -47,8 +60,9 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
             this.factionSpinner = f;
             this.raceSpinner = r;
         }
-        public State(View i, View b, View c, View t, View f, View r){
+        public State(LoadBuilder<Builders.Any.B> http, View i, View b, View c, View t, View f, View r){
             this(
+                http,
                 ((TextInputEditText) i),
                 ((ImageButton) b),
                 ((Spinner) c),
@@ -57,9 +71,11 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
                 ((Spinner) r)
             );
         }
-        public static State from(TextInputEditText i, ImageButton b, Spinner c, Spinner t, Spinner f, Spinner r){ return new State(i, b, c, t, f, r); }
-        public static State from(View i, View b, View c, View t, View f, View r){ return new State(i, b, c, t, f, r); }
+        public static State from(LoadBuilder<Builders.Any.B> http, TextInputEditText i, ImageButton b, Spinner c, Spinner t, Spinner f, Spinner r){ return new State(http, i, b, c, t, f, r); }
+        public static State from(LoadBuilder<Builders.Any.B> http, View i, View b, View c, View t, View f, View r){ return new State(http, i, b, c, t, f, r); }
 
+        public LoadBuilder<Builders.Any.B> getHttpClient() { return httpClient; }
+        public LoadBuilder<Builders.Any.B> http() { return this.getHttpClient(); }
         public TextInputEditText getNameInput() { return nameInput; }
         public ImageButton getNameSubmitButton() { return nameSubmit; }
         public Spinner getClasseSpinner() { return classeSpinner; }
@@ -74,7 +90,9 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_view, null);
+
         this.state = State.from(
+            Ion.with(getContext()),
             view.findViewById(R.id.nameInput),
             view.findViewById(R.id.nameSubmit),
             view.findViewById(R.id.classeSpinner),
@@ -88,6 +106,51 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         return view;
     }
 
+    protected String getTextInputValue(State state){
+        return state.getNameInput().getText().toString().toLowerCase();
+    }
+
+    protected boolean textInputHasValue(State state){
+        return !Pattern.compile("^\\s*$")
+        .matcher(this.getTextInputValue(state))
+        .matches();
+    }
+
+    @NonNull
+    protected ResponseFuture<JsonArray> dispatchRequest(@NonNull State state, @NonNull String url, @Nullable Map<String, String> queryParams, @Nullable Map<String, List<String>> queryArrayParams){
+        Log.v(TAG, "GET@" + url + " w/ " + queryParams + " & " + queryArrayParams);
+
+        Builders.Any.B request = state.http().load(url)
+        .addHeader(getString(R.string.apiCredentialHeader), getString(R.string.apiCredential))
+        .addQuery(getString(R.string.apiLocaleQueryStringName), getString(R.string.apiLocale));
+
+        if(queryParams != null){
+            if(!queryParams.isEmpty()){
+                for (Map.Entry<String, String> entry : queryParams.entrySet())
+                    request.addQuery(entry.getKey(), entry.getValue());
+            }
+        }
+
+        if(queryArrayParams != null){
+            if(!queryArrayParams.isEmpty())
+                request.addQueries(queryArrayParams);
+        }
+
+        return request.asJsonArray(Charset.forName("utf-8"));
+    }
+
+    @NonNull
+    protected ResponseFuture<JsonArray> dispatchRequest(@NonNull State state, @NonNull String url){
+        return this.dispatchRequest(state, url, null, null);
+    }
+
+    protected void goShowResults(JsonArray json){
+        Intent intent = new Intent(getContext(), DisplayResultList.class);
+        intent.putExtra(JSON_ARRAY_EXTRA, json.toString());
+
+        getContext().startActivity(intent);
+    }
+
     protected void setupView(State state) {
         setupNameSearch(state);
         setupClassSearch(state);
@@ -97,6 +160,7 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
     }
 
     protected void setupNameSearch(State state) {
+        Log.v(TAG, "Setting up name search");
         TextInputEditText nameInput = state.getNameInput();
         ImageButton submit = state.getNameSubmitButton();
 
@@ -108,50 +172,52 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         });
 
         submit.setOnClickListener(v -> {
-            String value = this.state.getNameInput().getText().toString().toLowerCase();
-            if(value.isEmpty())
+            if(!this.textInputHasValue(state))
                 return;
 
-            String endPoint = api("/cards/search/%name%");
-            String url = endPoint.replaceFirst("%name%", Uri.encode(value));
+            String value = this.getTextInputValue(state);
+            String url = api("/cards/search/%name%").replaceFirst("%name%", Uri.encode(value));
 
-            Ion.with(getContext()).load(url)
-            .addHeader(getString(R.string.apiCredentialHeader), getString(R.string.apiCredential))
-            .addQuery("locale", getString(R.string.apiLocale))
-            .asJsonArray(Charset.forName("utf-8"))
-            .then((e, result) -> {
+            this.dispatchRequest(state, url)
+            .then((e, json) -> {
                 if(e != null) {
-                    Log.e(TAG, e.toString());
+                    Log.e(TAG, e.getMessage());
                     Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage(result.toString())
-                .setTitle("Result");
+                this.goShowResults(json);
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//                builder.setMessage(json.toString())
+//                .setTitle("Result");
+//
+//                AlertDialog dialog = builder.create();
+//                dialog.show();
             });
         });
     }
 
     protected void setupClassSearch(State state){
+        Log.v(TAG, "Setting up class search");
         Spinner classeSpinner = state.getClasseSpinner();
         classeSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, CLASSES));
     }
 
     protected void setupTypeSearch(State state) {
+        Log.v(TAG, "Setting up type search");
         Spinner typeSpinner = state.getTypeSpinner();
         typeSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, TYPES));
     }
 
     private void setupFactionSearch(State state) {
+        Log.v(TAG, "Setting up faction search");
         Spinner factionSpinner = state.getFactionSpinner();
         factionSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, FACTIONS));
     }
 
     private void setupRaceSearch(State state) {
+        Log.v(TAG, "Setting up race search");
         Spinner raceSpinner = state.getRaceSpinner();
         raceSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, RACES));
     }
