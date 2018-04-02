@@ -102,4 +102,26 @@
         app:layout_constraintStart_toEndOf="@+id/raceLabel"
         app:layout_constraintTop_toBottomOf="@+id/typeValue" />
 
+    <TextView
+        android:id="@+id/loreLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/loreLabel"
+        android:textColor="@color/text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/raceLabel" />
+
+    <TextView
+        android:id="@+id/loreValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loreLabel" />
+
 </android.support.constraint.ConstraintLayout>

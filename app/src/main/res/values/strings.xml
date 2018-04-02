@@ -23,4 +23,5 @@
     <string name="factionLabel">Faction : </string>
     <string name="typeLabel">Type : </string>
     <string name="raceLabel">Race : </string>
+    <string name="loreLabel">Lore :</string>
 </resources>

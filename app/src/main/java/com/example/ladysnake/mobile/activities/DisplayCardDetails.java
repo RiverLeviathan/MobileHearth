@@ -19,6 +19,7 @@ import com.example.ladysnake.mobile.model.Card;
 import com.example.ladysnake.mobile.model.CardFactory;
 import com.example.ladysnake.mobile.model.CardStatHolder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.future.ResponseFuture;
@@ -32,33 +33,36 @@ public class DisplayCardDetails extends AppCompatActivity {
     public final static String TAG = "DisplayCardDetails";
 
     public static class State{
-        protected TextView nameTextView, factionTextView, typeTextView, raceTextView;
+        protected TextView nameTextView, factionTextView, typeTextView, raceTextView, loreTextView;
         protected ImageView imageView;
 
-        public State(TextView n, ImageView i, TextView f, TextView t, TextView r){
+        public State(TextView n, ImageView i, TextView f, TextView t, TextView r, TextView l){
             this.nameTextView = n;
             this.imageView = i;
             this.factionTextView = f;
             this.typeTextView = t;
             this.raceTextView = r;
+            this.loreTextView = l;
         }
-        public State(View n, View i, View f, View t, View r){
+        public State(View n, View i, View f, View t, View r, View l){
             this(
                 (TextView)n,
                 (ImageView)i,
                 (TextView)f,
                 (TextView)t,
-                (TextView)r
+                (TextView)r,
+                (TextView)l
             );
         }
-        public static State from(TextView n, ImageView i, TextView f, TextView t, TextView r){ return new State(n, i, f, t, r); }
-        public static State from(View n, View i, View f, View t, View r){ return new State(n, i, f, t, r); }
+        public static State from(TextView n, ImageView i, TextView f, TextView t, TextView r, TextView l){ return new State(n, i, f, t, r, l); }
+        public static State from(View n, View i, View f, View t, View r, View l){ return new State(n, i, f, t, r, l); }
 
         public TextView getNameTextView() { return nameTextView; }
         public ImageView getImageView() { return imageView; }
         public TextView getFactionTextView() { return factionTextView; }
         public TextView getTypeTextView() { return typeTextView; }
         public TextView getRaceTextView() { return raceTextView; }
+        public TextView getLoreTextView() { return loreTextView; }
     }
 
     protected State state;
@@ -95,7 +99,8 @@ public class DisplayCardDetails extends AppCompatActivity {
             findViewById(R.id.cardImage),
             findViewById(R.id.factionValue),
             findViewById(R.id.typeValue),
-            findViewById(R.id.raceValue)
+            findViewById(R.id.raceValue),
+            findViewById(R.id.loreValue)
         );
 
         this.setupView(this.state, this.statHolder);
@@ -126,7 +131,7 @@ public class DisplayCardDetails extends AppCompatActivity {
         this.setupValues(state, statHolder);
     }
 
-    private void setupValues(State state, CardStatHolder statHolder) {
+    protected void setupValues(State state, CardStatHolder statHolder) {
         this.dispatchInfoRequest(statHolder)
         .then((e, jsonArray)->{
             if(e != null) {
@@ -137,14 +142,23 @@ public class DisplayCardDetails extends AppCompatActivity {
 
             JsonObject json = jsonArray.get(0).getAsJsonObject();
 
-            String faction = json.get(FACTION) == null ? "∅" : json.get(FACTION).getAsString();
-            state.getFactionTextView().setText(faction);
-            state.getTypeTextView().setText(json.get(TYPE).getAsString());
-            state.getRaceTextView().setText(json.get(RACE).getAsString());
+            state.getFactionTextView().setText(convertStat(json.get(FACTION)));
+            state.getTypeTextView().setText(convertStat(json.get(TYPE)));
+            state.getRaceTextView().setText(convertStat(json.get(RACE)));
+            state.getLoreTextView().setText(convertStat(json.get(LORE)));
         });
     }
 
-    public final static String FACTION = "faction";
+    private String convertStat(JsonElement element){
+        String value = String.valueOf(element);
+        if(value == null || value == "null")
+            return "∅";
+
+        return value.replaceFirst("\"", "").replaceFirst("\"", "");
+    }
+
+    public final static String FACTION = "playerClass";//"faction";
     public final static String TYPE = "type";
     public final static String RACE = "race";
+    public final static String LORE = "flavor";
 }
