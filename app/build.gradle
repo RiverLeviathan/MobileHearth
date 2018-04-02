@@ -44,6 +44,6 @@ dependencies {
 
     compile 'com.koushikdutta.ion:ion:2.2.1'
     compile 'com.squareup.picasso:picasso:2.71828'
-//    compile 'com.google.guava:guava:24.1-android'
+    compile 'com.google.guava:guava:24.1-android'
     compile 'org.apache.commons:commons-text:1.3'
 }

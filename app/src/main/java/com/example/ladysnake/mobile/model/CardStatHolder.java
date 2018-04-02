@@ -96,6 +96,10 @@ public class CardStatHolder {
             return from((Spell)card);
         else if(card instanceof Weapon)
             return from((Weapon)card);
+        else if(card instanceof HeroPower)
+            return from((HeroPower)card);
+        else if(card instanceof Enchantment)
+            return from((Enchantment)card);
         else
             return null;
     }
@@ -159,6 +163,36 @@ public class CardStatHolder {
         ret.addStat(getMappedName(Weapon.MANA_COST), json.get(Weapon.MANA_COST).getAsString())
         .addStat(getMappedName(Weapon.DAMAGE), json.get(Weapon.DAMAGE).getAsString())
         .addStat(getMappedName(Weapon.DURABILITY), json.get(Weapon.DURABILITY).getAsString());
+
+        return ret;
+    }
+
+    @NonNull
+    protected static CardStatHolder from(HeroPower spell){
+        JsonObject json = spell.toJson();
+        CardStatHolder ret = new CardStatHolder(
+            json.get(NAME).getAsString(),
+            json.get(IMG_URL).getAsString(),
+            json.get(ID).getAsString(),
+            json.get(DESCRIPTION).getAsString()
+        );
+
+        ret.addStat(getMappedName(HeroPower.MANA_COST), json.get(HeroPower.MANA_COST).getAsString());
+
+        return ret;
+    }
+
+    @NonNull
+    protected static CardStatHolder from(Enchantment spell){
+        JsonObject json = spell.toJson();
+        CardStatHolder ret = new CardStatHolder(
+            json.get(NAME).getAsString(),
+            json.get(IMG_URL).getAsString(),
+            json.get(ID).getAsString(),
+            json.get(DESCRIPTION).getAsString()
+        );
+
+        ret.addStat(getMappedName(HeroPower.MANA_COST), json.get(Enchantment.MANA_COST).getAsString());
 
         return ret;
     }

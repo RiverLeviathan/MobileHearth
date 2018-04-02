@@ -6,6 +6,8 @@ import android.util.Log;
 
 //import com.google.common.collect.BiMap;
 //import com.google.common.collect.HashBiMap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -26,21 +28,25 @@ public abstract class CardFactory {
         MINION,
         SPELL,
         WEAPON,
-        HERO;
+        HERO,
+        HERO_POWER,
+        ENCHANTMENT;
 
         protected final static Map<CardType, String> STRINGS = new HashMap<CardType, String>(){{
             put(CardType.MINION, "Minion");
             put(CardType.SPELL, "Spell");
             put(CardType.WEAPON, "Weapon");
             put(CardType.HERO, "Hero");
+            put(CardType.HERO_POWER, "Hero Power");
+            put(CardType.ENCHANTMENT, "Enchantment");
         }};
 
-        protected final static Map<String, CardType> TYPES = new HashMap<String, CardType>(){{
-            put("Minion", CardType.MINION);
-            put("Spell", CardType.SPELL);
-            put("Weapon", CardType.WEAPON);
-            put("Hero", CardType.HERO);
-        }};
+//        protected final static Map<String, CardType> TYPES = new HashMap<String, CardType>(){{
+//            put("Minion", CardType.MINION);
+//            put("Spell", CardType.SPELL);
+//            put("Weapon", CardType.WEAPON);
+//            put("Hero", CardType.HERO);
+//        }};
 
 //        protected final static BiMap<CardType, String> STRINGS = HashBiMap.create(new HashMap<CardType, String>(){{
 //            put(CardType.MINION, "Minion");
@@ -50,6 +56,8 @@ public abstract class CardFactory {
 //        }});
 //
 //        protected final static BiMap<String, CardType> TYPES = STRINGS.inverse();
+
+        protected final static BiMap<String, CardType> TYPES = HashBiMap.create(STRINGS).inverse();
 
         public String toString(){
             return STRINGS.get(this);
@@ -82,6 +90,10 @@ public abstract class CardFactory {
                 return fromWeapon(json);
             case HERO:
                 return fromHero(json);
+            case HERO_POWER:
+                return fromHeroPower(json);
+            case ENCHANTMENT:
+                return fromEnchantment(json);
             default:
                 return null;
         }
@@ -99,7 +111,7 @@ public abstract class CardFactory {
             Integer health = json.get(Minion.HEALTH).getAsInt();
 
             return Minion.from(id, name, manaCost, description, imgUrl, damage, health);
-        }catch(Exception e){
+        }catch(Throwable t){
             return null;
         }
     }
@@ -114,7 +126,7 @@ public abstract class CardFactory {
             String imgUrl = json.get(Spell.IMG_URL).getAsString();
 
             return Spell.from(id, name, manaCost, description, imgUrl);
-        }catch(Exception e){
+        }catch(Throwable t){
             return null;
         }
     }
@@ -130,7 +142,7 @@ public abstract class CardFactory {
             Integer durability = json.get(Weapon.DURABILITY).getAsInt();
 
             return Weapon.from(id, name, manaCost, imgUrl, damage, durability);
-        }catch(Exception e){
+        }catch(Throwable t){
             return null;
         }
     }
@@ -145,7 +157,37 @@ public abstract class CardFactory {
             Integer health = json.get(Hero.HEALTH).getAsInt();
 
             return Hero.from(id, name, manaCost, imgUrl, health);
-        }catch(Exception e){
+        }catch(Throwable t){
+            return null;
+        }
+    }
+
+    @Nullable
+    protected static HeroPower fromHeroPower(@NonNull JsonObject json){
+        try{
+            String id = json.get(HeroPower.ID).getAsString();
+            String name = json.get(HeroPower.NAME).getAsString();
+            Integer manaCost = json.get(HeroPower.MANA_COST).getAsInt();
+            String imgUrl = json.get(HeroPower.IMG_URL).getAsString();
+            String description = json.get(HeroPower.DESCRIPTION).getAsString();
+
+            return HeroPower.from(id, name, manaCost, imgUrl, description);
+        }catch(Throwable t){
+            return null;
+        }
+    }
+
+    @Nullable
+    protected static Enchantment fromEnchantment(@NonNull JsonObject json){
+        try{
+            String id = json.get(Enchantment.ID).getAsString();
+            String name = json.get(Enchantment.NAME).getAsString();
+            Integer manaCost = json.get(Enchantment.MANA_COST).getAsInt();
+            String imgUrl = json.get(Enchantment.IMG_URL).getAsString();
+            String description = json.get(Enchantment.DESCRIPTION).getAsString();
+
+            return Enchantment.from(id, name, manaCost, imgUrl, description);
+        }catch(Throwable t){
             return null;
         }
     }
