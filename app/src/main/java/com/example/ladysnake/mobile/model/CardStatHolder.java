@@ -8,6 +8,10 @@ import com.google.gson.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A class that holds relevant stats for a {@link Card}
+ * @author Ludwig GUERIN
+ */
 public class CardStatHolder {
     protected final static Map<String, String> MAPPING = new HashMap<String, String>(){{
         put(Card.MANA_COST, "Coût en mana");
@@ -19,6 +23,11 @@ public class CardStatHolder {
         put(Weapon.DURABILITY, "Durabilité");
     }};
 
+    /**
+     * Gets the "header" name corresponding to the given key
+     * @param key being the key to the desired "header" name
+     * @return the desired "header" name
+     */
     @NonNull
     protected static String getMappedName(String key){
         return MAPPING.get(key);
@@ -54,6 +63,13 @@ public class CardStatHolder {
         this.id = id;
         return this;
     }
+
+    /**
+     * Add a stat to this {@link CardStatHolder}'s stats
+     * @param key being the name of this new stat
+     * @param value being its value
+     * @return this (for chaining purposes)
+     */
     protected CardStatHolder addStat(@NonNull String key, @NonNull String value){
 //        if(this.stats.containsKey(key))
 //            this.stats.replace(key, value);
@@ -76,9 +92,7 @@ public class CardStatHolder {
     }
 
 
-    @Nullable public String getStat(String key){
-        return this.stats.get(key);
-    }
+    @Nullable public String getStat(String key){ return this.stats.get(key); }
     @NonNull public String getName(){ return this.name; }
     @NonNull public String getImgUrl(){ return this.imgUrl; }
     @NonNull public String getId(){ return this.id; }
@@ -86,6 +100,11 @@ public class CardStatHolder {
     public boolean hasDescription(){ return this.description != null; }
     public Map<String, String> getStats(){ return new HashMap<>(this.stats); }
 
+    /**
+     * Instantiate a {@link CardStatHolder} from a {@link Card}
+     * @param card being the {@link Card} to construct from
+     * @return the constructed {@link CardStatHolder}
+     */
     @Nullable
     public static CardStatHolder from(Card card){
         if(card instanceof Hero)

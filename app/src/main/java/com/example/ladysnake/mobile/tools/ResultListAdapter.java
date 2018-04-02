@@ -16,7 +16,14 @@ import com.example.ladysnake.mobile.model.Card;
 
 import java.util.List;
 
+/**
+ * An {@link ArrayAdapter} used to display a list of cards (destined to be detailed afterwards)
+ * @author Ludwig GUERIN
+ */
 public class ResultListAdapter extends ArrayAdapter<Card> {
+    /**
+     * A class that gives access to the relevant UI components
+     */
     public static class State{
         protected TextView textView;
         protected ImageView icon;

@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import com.google.gson.JsonObject;
 
 /**
- * Created by Ludwig on 25/03/2018.
+ * A model that describes a weapon card
+ * @author Ludwig GUERIN
  */
-
 public class Weapon extends Card {
     public final static String DAMAGE = "attack";
     public final static String DURABILITY = "durability";

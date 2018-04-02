@@ -16,14 +16,15 @@ import org.apache.commons.text.WordUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A "static" class used to easily instantiate a {@link Card} object from its JSON representation
+ */
 public abstract class CardFactory {
     public final static String TAG = "CardFactory";
 
-//    public final static String MINION_TYPE = "Minion";
-//    public final static String SPELL_TYPE = "Spell";
-//    public final static String WEAPON_TYPE = "Weapon";
-//    public final static String HERO_TYPE = "Hero";
-
+    /**
+     * An enum listing the different types of cards
+     */
     public static enum CardType{
         MINION,
         SPELL,
@@ -41,39 +42,38 @@ public abstract class CardFactory {
             put(CardType.ENCHANTMENT, "Enchantment");
         }};
 
-//        protected final static Map<String, CardType> TYPES = new HashMap<String, CardType>(){{
-//            put("Minion", CardType.MINION);
-//            put("Spell", CardType.SPELL);
-//            put("Weapon", CardType.WEAPON);
-//            put("Hero", CardType.HERO);
-//        }};
-
-//        protected final static BiMap<CardType, String> STRINGS = HashBiMap.create(new HashMap<CardType, String>(){{
-//            put(CardType.MINION, "Minion");
-//            put(CardType.SPELL, "Spell");
-//            put(CardType.WEAPON, "Weapon");
-//            put(CardType.HERO, "Hero");
-//        }});
-//
-//        protected final static BiMap<String, CardType> TYPES = STRINGS.inverse();
-
         protected final static BiMap<String, CardType> TYPES = HashBiMap.create(STRINGS).inverse();
 
         public String toString(){
             return STRINGS.get(this);
         }
 
+        /**
+         * Creates a {@link CardType} from its string representation
+         * @param str being the string to construct a {@link CardType} from
+         * @return the constructed {@link CardType}
+         */
         public static CardType from(String str){
             return TYPES.get(WordUtils.capitalizeFully(str));
         }
     }
 
+    /**
+     * Instantiate a {@link Card} from its JSON represenation (as a {@link String})
+     * @param json being the JSON card to construct from
+     * @return the instantiated {@link Card}, or NULL if invalid
+     */
     @Nullable
     public static Card from(@NonNull String json){
         JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
         return from(jsonObject);
     }
 
+    /**
+     * Instantiate a {@link Card} from a {@link JsonObject}
+     * @param json being the {@link JsonObject} card to construct from
+     * @return the instantiated {@link Card}, or NULL if invalid
+     */
     @Nullable
     public static Card from(@NonNull JsonObject json){
 //        Log.v(TAG, "Json: " + json.get("type").getAsString());

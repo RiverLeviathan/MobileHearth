@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Ludwig on 25/03/2018.
+ * A custom {@link FragmentPagerAdapter} specialized for this specific use case
+ * @author Ludwig GUERIN
  */
-
 public class TabPagerAdapter extends FragmentPagerAdapter {
     List<ResourceAwareFragment> fragments = new ArrayList<ResourceAwareFragment>(){{
         add(0, SearchView.make().withRes(R.drawable.search));

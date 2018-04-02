@@ -4,9 +4,9 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 
 /**
- * Created by Ludwig on 24/03/2018.
+ * A {@link Fragment} that provides a default implementation of {@link ResourceAware}
+ * @author Ludwig GUERIN
  */
-
 public abstract class ResourceAwareFragment extends Fragment implements ResourceAware {
     protected int res = -404;
 

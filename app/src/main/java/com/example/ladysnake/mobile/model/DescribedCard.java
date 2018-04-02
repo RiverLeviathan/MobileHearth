@@ -4,6 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+/**
+ * An abstract class for {@link Card} that have a description
+ * @author Ludwig GUERIN
+ */
 public abstract class DescribedCard extends Card {
     public final static String DESCRIPTION = "text";
 

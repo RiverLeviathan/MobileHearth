@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import com.google.gson.JsonObject;
 
 /**
- * Created by Ludwig on 25/03/2018.
+ * A model that describes a spell card
+ * @author Ludwig GUERIN
  */
-
 public class Spell extends DescribedCard {
 
     public Spell(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description) {

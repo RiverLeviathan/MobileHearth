@@ -6,8 +6,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+/**
+ * The class that serves as the initial (and main) activity of this Application
+ * @author Ludwig GUERIN
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * A class that gives access to the relevant UI components
+     */
     public static class State{
         ViewPager pager;
         TabLayout tabLayout;
@@ -43,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
         setupView(this.state);
     }
 
+    /**
+     * Configures the view components based on the given {@link State} object
+     * @param state being the {@link State} to use (as if it was this {@link MainActivity}'s {@link State})
+     */
     protected void setupView(State state){
         ViewPager pager = state.getPager();
         TabLayout tabs = state.getTabLayout();
@@ -51,13 +62,23 @@ public class MainActivity extends AppCompatActivity {
         setupAdapter(state, tabs, pager);
     }
 
+    /**
+     * Configures the tab view based on the given {@link State} object
+     * @param tabs being the TabLayout to configure
+     */
     protected void setupTabs(TabLayout tabs){
-        TabLayout.Tab searchTab = tabs.newTab().setIcon(R.drawable.search);//.setCustomView(R.layout.search_view);
-        TabLayout.Tab editTab = tabs.newTab().setIcon(R.drawable.edit);//.setCustomView(R.layout.edit_view);
+        TabLayout.Tab searchTab = tabs.newTab().setIcon(R.drawable.search);
+        TabLayout.Tab editTab = tabs.newTab().setIcon(R.drawable.edit);
         tabs.addTab(searchTab,0, true);
         tabs.addTab(editTab, 1);
     }
 
+    /**
+     * Configures the tab layout's adapter
+     * @param state being the {@link State} to use (as if it was this {@link MainActivity}'s {@link State})
+     * @param tabs being the {@link TabLayout} to configure
+     * @param pager being the {@link TabLayout}'s  {@link ViewPager}
+     */
     protected void setupAdapter(State state, TabLayout tabs, ViewPager pager){
         TabPagerAdapter adapter = new TabPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -67,12 +88,23 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Configures the tabs icons based on a given {@link State}
+     * @param state being the {@link State} to use (as if it was this {@link MainActivity}'s {@link State})
+     * @param adapter being the {@link TabPagerAdapter} of the {@link State}'s {@link TabPagerAdapter}
+     */
     protected void setupIcons(State state, TabPagerAdapter adapter){
         TabLayout tabLayout = state.getTabLayout();
         tabLayout.getTabAt(0).setIcon(adapter.getItem(0).getRes());
         tabLayout.getTabAt(1).setIcon(adapter.getItem(1).getRes());
     }
 
+    /**
+     * Adds listeners to the UI components
+     * @param state being the {@link State} to use (as if it was this {@link MainActivity}'s {@link State})
+     * @param tabs being the {@link TabLayout} to configure
+     * @param pager being the {@link TabLayout}'s  {@link ViewPager}
+     */
     protected void setupListeners(State state, TabLayout tabs, ViewPager pager){
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             TabLayout.Tab current = tabs.getTabAt(0);

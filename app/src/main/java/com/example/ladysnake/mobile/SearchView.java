@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,23 +30,30 @@ import com.koushikdutta.ion.future.ResponseFuture;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Created by Ludwig on 24/03/2018.
+ * A class that handle's the search view's logic
+ * @author Ludwig GUERIN
  */
-
 public class SearchView extends ResourceAwareFragment implements ApiAware{
     public final static String TAG = "SearchView";
     public final static String JSON_ARRAY_EXTRA = "JsonObject";
 
+    /**
+     * An helper method that crafts a complete URL to the API based on a URI
+     * @param uri being the URI to craft the URL from
+     * @return the complete URL to the correct API endpoint
+     */
     String api(String uri){
         return getContext().getString(R.string.api) + uri;
     }
 
+    /**
+     * A class that gives access to the relevant UI components
+     */
     public static SearchView make(){ return new SearchView(); }
 
     public static class State{
@@ -111,16 +117,35 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         return view;
     }
 
+    /**
+     * Retrieves the (correctly formatted) text input's value
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     * @return the text input's value
+     */
     protected String getTextInputValue(State state){
         return state.getNameInput().getText().toString().toLowerCase().trim();
     }
 
+    /**
+     * Determines whether or not the text input has a (correct) value
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     * @return TRUE if it does, FALSE if it doesn't
+     */
     protected boolean textInputHasValue(State state){
         return !Pattern.compile("^\\s*$")
         .matcher(this.getTextInputValue(state))
         .matches();
     }
 
+
+    /**
+     * Dispatches a GET request to the specified URL
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     * @param url being the URL to GET from
+     * @param queryParams being the additional query string params
+     * @param queryArrayParams being the additional query string array params
+     * @return a Future that resolves to the desired {@link JsonArray}
+     */
     @NonNull
     protected ResponseFuture<JsonArray> dispatchRequest(@NonNull State state, @NonNull String url, @Nullable Map<String, String> queryParams, @Nullable Map<String, List<String>> queryArrayParams){
         Log.v(TAG, "GET@" + url + " w/ " + queryParams + " & " + queryArrayParams);
@@ -144,11 +169,22 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         return request.asJsonArray(Charset.forName("utf-8"));
     }
 
+    /**
+     * Dispatches a GET request to the specified URL
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     * @param url being the URL to GET from
+     * @return a Future that resolves to the desired {@link JsonArray}
+     */
     @NonNull
     protected ResponseFuture<JsonArray> dispatchRequest(@NonNull State state, @NonNull String url){
         return this.dispatchRequest(state, url, null, null);
     }
 
+    /**
+     * Dispatches a GET request to the info endpoint
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     * @return a Future that resolves to the desired {@link JsonObject}
+     */
     protected ResponseFuture<JsonObject> dispatchInfoRequest(@NonNull State state){
         String url = api("/info");
         Log.v(TAG, "GET@" + url);
@@ -161,6 +197,10 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         return request.asJsonObject(Charset.forName("utf-8"));
     }
 
+    /**
+     * Handles the switching between the {@link MainActivity} and {@link DisplayResultList}
+     * @param json being the {@link JsonArray} of cards that will be used by {@link DisplayResultList}
+     */
     protected void goShowResults(JsonArray json){
         Intent intent = new Intent(getContext(), DisplayResultList.class);
         intent.setAction(Intent.ACTION_VIEW);
@@ -170,6 +210,10 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         getContext().startActivity(intent);
     }
 
+    /**
+     * Configures the view components based on the given {@link State} object
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     */
     protected void setupView(State state) {
 //        setupNameSearch(state);
 //        setupClassSearch(state);
@@ -219,6 +263,10 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         });
     }
 
+    /**
+     * Configures the name criteria
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     */
     protected void setupNameSearch(State state) {
         Log.v(TAG, "Setting up name search");
         TextInputEditText nameInput = state.getNameInput();
@@ -247,17 +295,14 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
                 }
 
                 this.goShowResults(json);
-
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                builder.setMessage(json.toString())
-//                .setTitle("Result");
-//
-//                AlertDialog dialog = builder.create();
-//                dialog.show();
             });
         });
     }
 
+    /**
+     * Configures the class criteria
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     */
     protected void setupClassSearch(State state){
         Log.v(TAG, "Setting up class search");
         Spinner classeSpinner = state.getClasseSpinner();
@@ -269,7 +314,7 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(isFirst){
+                if(isFirst){ //Ne pas déclencher la requête à l'initialisation du composant graphique
                     isFirst = false;
                     return;
                 }
@@ -294,6 +339,10 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         });
     }
 
+    /**
+     * Configures the type criteria
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     */
     protected void setupTypeSearch(State state) {
         Log.v(TAG, "Setting up type search");
         Spinner typeSpinner = state.getTypeSpinner();
@@ -330,6 +379,10 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         });
     }
 
+    /**
+     * Configures the faction criteria
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     */
     private void setupFactionSearch(State state) {
         Log.v(TAG, "Setting up faction search");
         Spinner factionSpinner = state.getFactionSpinner();
@@ -367,6 +420,10 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         });
     }
 
+    /**
+     * Configures the race criteria
+     * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})
+     */
     private void setupRaceSearch(State state) {
         Log.v(TAG, "Setting up race search");
         Spinner raceSpinner = state.getRaceSpinner();

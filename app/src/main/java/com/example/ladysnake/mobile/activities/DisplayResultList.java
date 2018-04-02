@@ -21,10 +21,17 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An activity used to display a list of cards (as a result of some sort of manipulation)
+ * @author Ludwig GUERIN
+ */
 public class DisplayResultList extends AppCompatActivity {
     public final static String TAG = "DisplayResultList";
     public final static String CARD_EXTRA = "card";
 
+    /**
+     * A class that gives access to the relevant UI components
+     */
     public static class State{
         protected ListView listView;
 
@@ -72,6 +79,10 @@ public class DisplayResultList extends AppCompatActivity {
         setupView(this.state, this.resultData);
     }
 
+    /**
+     * Configures the view components based on the given {@link State} object
+     * @param state being the {@link State} to use (as if it was this {@link DisplayResultList}'s {@link State})
+     */
     protected void setupView(State state, JsonArray resultData){
         ListView listView = state.getListView();
         List<Card> cards = new ArrayList<>();
@@ -86,13 +97,16 @@ public class DisplayResultList extends AppCompatActivity {
         this.adapter = new ResultListAdapter(this, R.layout.list_item_result, cards);
         listView.setAdapter(this.adapter);
 
-        listView.setOnItemClickListener((parent, view, position, id) -> { //TODO: See why this fucker doesn't work
-            //TODO: Go activity that will display the card's details
-            Log.v(TAG, "Handling click for item #"+position);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+//            Log.v(TAG, "Handling click for item #"+position);
             goShowDetails(this.adapter.getItem(position));
         });
     }
 
+    /**
+     * Handles switching from {@link DisplayResultList} to {@link DisplayCardDetails}
+     * @param card being the {@link Card} that will be sent to the {@link DisplayCardDetails} activity
+     */
     protected void goShowDetails(Card card){
         Log.v(TAG, "Going to show details of card: " + card.toJson().toString());
         Intent intent = new Intent(this, DisplayCardDetails.class);

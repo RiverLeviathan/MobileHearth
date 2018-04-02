@@ -1,9 +1,9 @@
 package com.example.ladysnake.mobile.tools;
 
 /**
- * Created by Ludwig on 24/03/2018.
+ * An interface that describes objects that are tied to a specific resource
+ * @author Ludwig GUERIN
  */
-
 public interface ResourceAware {
     ResourceAware withRes(int res);
     int getRes();

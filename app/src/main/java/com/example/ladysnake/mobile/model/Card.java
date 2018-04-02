@@ -2,11 +2,16 @@ package com.example.ladysnake.mobile.model;
 
 import android.support.annotation.NonNull;
 
+import com.example.ladysnake.mobile.tools.JsonObjectSerializable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-public abstract class Card{
+/**
+ * The base model of an Hearthstone Card
+ * @author Ludwig GUERIN
+ */
+public abstract class Card implements JsonObjectSerializable{
     public final static String ID = "cardId";
     public final static String TYPE = "type";
     public final static String NAME = "name";

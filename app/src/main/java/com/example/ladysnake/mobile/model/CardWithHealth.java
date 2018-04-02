@@ -4,6 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+/**
+ * An abstract class for {@link Card} that have a specific amount of HP
+ * @author Ludwig GUERIN
+ */
 public abstract class CardWithHealth extends Card{
     public final static String HEALTH = "health";
 
