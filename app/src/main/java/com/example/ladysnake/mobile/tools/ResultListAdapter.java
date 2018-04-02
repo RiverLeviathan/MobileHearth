@@ -77,7 +77,7 @@ public class ResultListAdapter extends ArrayAdapter<Card> {
 
         Card card = getItem(position);
         state.getTextView().setText(card.getName());
-        row.setClickable(true);
+//        row.setClickable(true);
 
         return row;
     }

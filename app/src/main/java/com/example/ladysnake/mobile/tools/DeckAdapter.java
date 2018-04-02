@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.example.ladysnake.mobile.EditView;
 import com.example.ladysnake.mobile.model.Deck;

@@ -52,6 +52,8 @@ public class DisplayResultList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_result_list);
 
+        Log.v(TAG, "Succesfully landed on activity : DisplayResultList");
+
         Intent intent = super.getIntent();
         if(intent == null){
             Log.e(TAG, "Error, started activity without intent");
@@ -86,6 +88,7 @@ public class DisplayResultList extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> { //TODO: See why this fucker doesn't work
             //TODO: Go activity that will display the card's details
+            Log.v(TAG, "Handling click for item #"+position);
             goShowDetails(this.adapter.getItem(position));
         });
     }
@@ -93,9 +96,12 @@ public class DisplayResultList extends AppCompatActivity {
     protected void goShowDetails(Card card){
         Log.v(TAG, "Going to show details of card: " + card.toJson().toString());
         Intent intent = new Intent(this, DisplayCardDetails.class);
-//        intent.setAction(Intent.ACTION_VIEW);
+        intent.setAction(Intent.ACTION_VIEW);
+
         Gson gson = new Gson();
         intent.putExtra(CARD_EXTRA, gson.toJson(card.toJson()));
+
+        Log.v(TAG, "Starting activity : DisplayCardDetails");
         startActivity(intent);
     }
 }

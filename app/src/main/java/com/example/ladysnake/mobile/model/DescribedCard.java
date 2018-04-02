@@ -9,8 +9,8 @@ public abstract class DescribedCard extends Card {
 
     protected String description;
 
-    public DescribedCard(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description) {
-        super(name, manaCost, imgUrl);
+    public DescribedCard(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description) {
+        super(id, name, manaCost, imgUrl);
         this.description = description;
     }
 

@@ -8,14 +8,19 @@
     <string name="apiLocale">frFR</string>
     <string name="apiCredentialHeader">X-Mashape-Key</string>
     <string name="apiCredential">9soVmGNNgSmshdGefufaLZp9tYUap11L88gjsnpzXpNhEdQMXG</string>
+    <string name="acceptHeader">Accept</string>
+    <string name="acceptHeaderValue">application/json</string>
 
     <string name="api_fail">Erreur lors de la requête à l\'API</string>
     <string name="work_in_progress">Work in progress ...</string>
 
-    <string name="classe">Classe</string>
-    <string name="type">Type</string>
-    <string name="faction">Faction</string>
-    <string name="race">Race</string>
+    <string name="classe">Par Classe</string>
+    <string name="type">Par Type</string>
+    <string name="faction">Par Faction</string>
+    <string name="race">Par Race</string>
     <string name="card_s_image">Card\'s image</string>
     <string name="search_icon">search icon</string>
+    <string name="factionLabel">Faction : </string>
+    <string name="typeLabel">Type : </string>
+    <string name="raceLabel">Race : </string>
 </resources>

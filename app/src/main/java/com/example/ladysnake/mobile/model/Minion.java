@@ -14,8 +14,8 @@ public class Minion extends DescribedCard {
 
     protected int damage, health;
 
-    public Minion(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description, @NonNull Integer damage, @NonNull Integer health) {
-        super(name, manaCost, imgUrl, description);
+    public Minion(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description, @NonNull Integer damage, @NonNull Integer health) {
+        super(id, name, manaCost, imgUrl, description);
 
         this.damage = damage;
         this.health = health;
@@ -34,8 +34,8 @@ public class Minion extends DescribedCard {
     }
 
     @NonNull
-    public static Minion from(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description, @NonNull Integer damage, @NonNull Integer health){
-        return new Minion(name, manaCost, imgUrl, description, damage, health);
+    public static Minion from(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description, @NonNull Integer damage, @NonNull Integer health){
+        return new Minion(id, name, manaCost, imgUrl, description, damage, health);
     }
 
 

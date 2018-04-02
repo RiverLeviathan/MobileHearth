@@ -22,12 +22,16 @@ import com.example.ladysnake.mobile.activities.DisplayResultList;
 import com.example.ladysnake.mobile.tools.ApiAware;
 import com.example.ladysnake.mobile.tools.ResourceAwareFragment;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.builder.Builders;
 import com.koushikdutta.ion.builder.LoadBuilder;
 import com.koushikdutta.ion.future.ResponseFuture;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -145,20 +149,74 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         return this.dispatchRequest(state, url, null, null);
     }
 
+    protected ResponseFuture<JsonObject> dispatchInfoRequest(@NonNull State state){
+        String url = api("/info");
+        Log.v(TAG, "GET@" + url);
+
+        Builders.Any.B request = state.http().load(url)
+        .addHeader(getString(R.string.apiCredentialHeader), getString(R.string.apiCredential))
+        .addHeader("Accept", "application/json");
+//        .addQuery(getString(R.string.apiLocaleQueryStringName), getString(R.string.apiLocale));
+
+        return request.asJsonObject(Charset.forName("utf-8"));
+    }
+
     protected void goShowResults(JsonArray json){
         Intent intent = new Intent(getContext(), DisplayResultList.class);
-//        intent.setAction(Intent.ACTION_VIEW);
+        intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(JSON_ARRAY_EXTRA, json.toString());
 
+        Log.v(TAG, "Starting activity : DisplayResultList");
         getContext().startActivity(intent);
     }
 
     protected void setupView(State state) {
-        setupNameSearch(state);
-        setupClassSearch(state);
-        setupTypeSearch(state);
-        setupFactionSearch(state);
-        setupRaceSearch(state);
+//        setupNameSearch(state);
+//        setupClassSearch(state);
+//        setupTypeSearch(state);
+//        setupFactionSearch(state);
+//        setupRaceSearch(state);
+
+        this.dispatchInfoRequest(state)
+        .then((e, json)->{
+            if(e != null) {
+                Log.e(TAG, e.getMessage());
+                Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            JsonArray classes = json.getAsJsonArray("classes");
+            JsonArray types = json.getAsJsonArray("types");
+            JsonArray factions = json.getAsJsonArray("factions");
+            JsonArray races = json.getAsJsonArray("races");
+
+            List<String> classesList = new ArrayList<>();
+            for(JsonElement classe : classes)
+                classesList.add(classe.getAsString());
+            CLASSES = classesList.toArray(new String[0]);
+
+            List<String> typesList = new ArrayList<>();
+            for(JsonElement type : types)
+                typesList.add(type.getAsString());
+            TYPES = typesList.toArray(new String[0]);
+
+            List<String> factionsList = new ArrayList<>();
+            for(JsonElement faction : factions)
+                factionsList.add(faction.getAsString());
+            FACTIONS = factionsList.toArray(new String[0]);
+
+            List<String> racesList = new ArrayList<>();
+            for(JsonElement race : races)
+                racesList.add(race.getAsString());
+            RACES = racesList.toArray(new String[0]);
+
+
+            setupNameSearch(state);
+            setupClassSearch(state);
+            setupTypeSearch(state);
+            setupFactionSearch(state);
+            setupRaceSearch(state);
+        });
     }
 
     protected void setupNameSearch(State state) {
@@ -255,16 +313,16 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
                 String value = typeSpinner.getSelectedItem().toString();
                 String url = api("/cards/types/%type%").replaceFirst("%type%", Uri.encode(value));
                 SearchView.this.dispatchRequest(state, url)
-                        .then((e, json) -> {
-                            if(e != null) {
-                                Log.e(TAG, e.getMessage());
-                                Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+                .then((e, json) -> {
+                    if(e != null) {
+                        Log.e(TAG, e.getMessage());
+                        Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                            //TODO: (optional) search by name inside of result
-                            SearchView.this.goShowResults(json);
-                        });
+                    //TODO: (optional) search by name inside of result
+                    SearchView.this.goShowResults(json);
+                });
             }
 
             @Override
@@ -292,16 +350,16 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
                 String value = factionSpinner.getSelectedItem().toString();
                 String url = api("/cards/factions/%faction%").replaceFirst("%faction%", Uri.encode(value));
                 SearchView.this.dispatchRequest(state, url)
-                        .then((e, json) -> {
-                            if(e != null) {
-                                Log.e(TAG, e.getMessage());
-                                Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+                .then((e, json) -> {
+                    if(e != null) {
+                        Log.e(TAG, e.getMessage());
+                        Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                            //TODO: (optional) search by name inside of result
-                            SearchView.this.goShowResults(json);
-                        });
+                    //TODO: (optional) search by name inside of result
+                    SearchView.this.goShowResults(json);
+                });
             }
 
             @Override
@@ -347,7 +405,7 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
     }
 
 
-    public final static String[] CLASSES = new String[]{
+    public /*final*/ static String[] CLASSES = new String[]{
             "Druid",
             "Hunter",
             "Mage",
@@ -360,16 +418,16 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
             "Death Knight"
     };
 
-    public final static String[] TYPES = new String[]{
+    public /*final*/ static String[] TYPES = new String[]{
             "Minion",
             "Spell",
             "Weapon",
             "Hero"
     };
 
-    public final static String[] FACTIONS = new String[]{};
+    public /*final*/ static String[] FACTIONS = new String[]{};
 
-    public final static String[] RACES = new String[]{
+    public /*final*/ static String[] RACES = new String[]{
             "Beast",
             "Demon",
             "Dragon",

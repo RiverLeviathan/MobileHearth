@@ -26,15 +26,16 @@ public class CardStatHolder {
 
     protected final static String NAME = Card.NAME;
     protected final static String IMG_URL = Card.IMG_URL;
+    protected final static String ID = Card.ID;
     protected final static String DESCRIPTION = DescribedCard.DESCRIPTION;
 
     @NonNull protected Map<String, String> stats;
-    @NonNull protected String name, imgUrl;
+    @NonNull protected String name, imgUrl, id;
     @Nullable protected String description;
 
     protected CardStatHolder(){
         this.stats = new HashMap<>();
-        this.setName("").setImgUrl("");
+        this.setName("").setImgUrl("").setId("");
         this.description = null;
     }
     protected CardStatHolder setName(@NonNull String name){
@@ -49,6 +50,10 @@ public class CardStatHolder {
         this.description = desc;
         return this;
     }
+    protected CardStatHolder setId(@NonNull String id){
+        this.id = id;
+        return this;
+    }
     protected CardStatHolder addStat(@NonNull String key, @NonNull String value){
 //        if(this.stats.containsKey(key))
 //            this.stats.replace(key, value);
@@ -61,8 +66,12 @@ public class CardStatHolder {
         this();
         this.setName(name).setImgUrl(url);
     }
-    protected CardStatHolder(@NonNull String name, @NonNull String url, @NonNull String description){
+    protected CardStatHolder(@NonNull String name, @NonNull String url, @NonNull String id){
         this(name, url);
+        this.setId(id);
+    }
+    protected CardStatHolder(@NonNull String name, @NonNull String url, @NonNull String id, @NonNull String description){
+        this(name, url, id);
         this.setDescription(description);
     }
 
@@ -72,6 +81,7 @@ public class CardStatHolder {
     }
     @NonNull public String getName(){ return this.name; }
     @NonNull public String getImgUrl(){ return this.imgUrl; }
+    @NonNull public String getId(){ return this.id; }
     @Nullable public String getDescription(){ return this.description; }
     public boolean hasDescription(){ return this.description != null; }
     public Map<String, String> getStats(){ return new HashMap<>(this.stats); }
@@ -95,7 +105,8 @@ public class CardStatHolder {
         JsonObject json = hero.toJson();
         CardStatHolder ret = new CardStatHolder(
             json.get(NAME).getAsString(),
-            json.get(IMG_URL).getAsString()
+            json.get(IMG_URL).getAsString(),
+            json.get(ID).getAsString()
         );
 
         ret.addStat(getMappedName(Hero.MANA_COST), json.get(Hero.MANA_COST).getAsString())
@@ -110,6 +121,7 @@ public class CardStatHolder {
         CardStatHolder ret = new CardStatHolder(
             json.get(NAME).getAsString(),
             json.get(IMG_URL).getAsString(),
+            json.get(ID).getAsString(),
             json.get(DESCRIPTION).getAsString()
         );
 
@@ -126,6 +138,7 @@ public class CardStatHolder {
         CardStatHolder ret = new CardStatHolder(
             json.get(NAME).getAsString(),
             json.get(IMG_URL).getAsString(),
+            json.get(ID).getAsString(),
             json.get(DESCRIPTION).getAsString()
         );
 
@@ -139,7 +152,8 @@ public class CardStatHolder {
         JsonObject json = weapon.toJson();
         CardStatHolder ret = new CardStatHolder(
             json.get(NAME).getAsString(),
-            json.get(IMG_URL).getAsString()
+            json.get(IMG_URL).getAsString(),
+            json.get(ID).getAsString()
         );
 
         ret.addStat(getMappedName(Weapon.MANA_COST), json.get(Weapon.MANA_COST).getAsString())

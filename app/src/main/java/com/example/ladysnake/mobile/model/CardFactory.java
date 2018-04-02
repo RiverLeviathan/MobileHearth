@@ -90,14 +90,15 @@ public abstract class CardFactory {
     @Nullable
     protected static Minion fromMinion(@NonNull JsonObject json){
         try{
-            String name = json.get(Card.NAME).getAsString();
-            Integer manaCost = json.get(Card.MANA_COST).getAsInt();
-            String description = json.get(DescribedCard.DESCRIPTION).getAsString();
-            String imgUrl = json.get(Card.IMG_URL).getAsString();
+            String id = json.get(Minion.ID).getAsString();
+            String name = json.get(Minion.NAME).getAsString();
+            Integer manaCost = json.get(Minion.MANA_COST).getAsInt();
+            String description = json.get(Minion.DESCRIPTION).getAsString();
+            String imgUrl = json.get(Minion.IMG_URL).getAsString();
             Integer damage = json.get(Minion.DAMAGE).getAsInt();
             Integer health = json.get(Minion.HEALTH).getAsInt();
 
-            return Minion.from(name, manaCost, description, imgUrl, damage, health);
+            return Minion.from(id, name, manaCost, description, imgUrl, damage, health);
         }catch(Exception e){
             return null;
         }
@@ -106,12 +107,13 @@ public abstract class CardFactory {
     @Nullable
     protected static Spell fromSpell(@NonNull JsonObject json){
         try{
-            String name = json.get(Card.NAME).getAsString();
-            Integer manaCost = json.get(Card.MANA_COST).getAsInt();
-            String description = json.get(DescribedCard.DESCRIPTION).getAsString();
-            String imgUrl = json.get(Card.IMG_URL).getAsString();
+            String id = json.get(Spell.ID).getAsString();
+            String name = json.get(Spell.NAME).getAsString();
+            Integer manaCost = json.get(Spell.MANA_COST).getAsInt();
+            String description = json.get(Spell.DESCRIPTION).getAsString();
+            String imgUrl = json.get(Spell.IMG_URL).getAsString();
 
-            return Spell.from(name, manaCost, description, imgUrl);
+            return Spell.from(id, name, manaCost, description, imgUrl);
         }catch(Exception e){
             return null;
         }
@@ -120,13 +122,14 @@ public abstract class CardFactory {
     @Nullable
     protected static Weapon fromWeapon(@NonNull JsonObject json){
         try{
-            String name = json.get(Card.NAME).getAsString();
-            Integer manaCost = json.get(Card.MANA_COST).getAsInt();
-            String imgUrl = json.get(Card.IMG_URL).getAsString();
+            String id = json.get(Weapon.ID).getAsString();
+            String name = json.get(Weapon.NAME).getAsString();
+            Integer manaCost = json.get(Weapon.MANA_COST).getAsInt();
+            String imgUrl = json.get(Weapon.IMG_URL).getAsString();
             Integer damage = json.get(Weapon.DAMAGE).getAsInt();
             Integer durability = json.get(Weapon.DURABILITY).getAsInt();
 
-            return Weapon.from(name, manaCost, imgUrl, damage, durability);
+            return Weapon.from(id, name, manaCost, imgUrl, damage, durability);
         }catch(Exception e){
             return null;
         }
@@ -135,12 +138,13 @@ public abstract class CardFactory {
     @Nullable
     protected static Hero fromHero(@NonNull JsonObject json){
         try{
-            String name = json.get(Card.NAME).getAsString();
-            Integer manaCost = json.get(Card.MANA_COST).getAsInt();
-            String imgUrl = json.get(Card.IMG_URL).getAsString();
-            Integer health = json.get(CardWithHealth.HEALTH).getAsInt();
+            String id = json.get(Hero.ID).getAsString();
+            String name = json.get(Hero.NAME).getAsString();
+            Integer manaCost = json.get(Hero.MANA_COST).getAsInt();
+            String imgUrl = json.get(Hero.IMG_URL).getAsString();
+            Integer health = json.get(Hero.HEALTH).getAsInt();
 
-            return Hero.from(name, manaCost, imgUrl, health);
+            return Hero.from(id, name, manaCost, imgUrl, health);
         }catch(Exception e){
             return null;
         }

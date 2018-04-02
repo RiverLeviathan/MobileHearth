@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.android.support.constraint:constraint-layout-1.0.2">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/d59be522453541ce87802491992898d3eefc39e4/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/d59be522453541ce87802491992898d3eefc39e4/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

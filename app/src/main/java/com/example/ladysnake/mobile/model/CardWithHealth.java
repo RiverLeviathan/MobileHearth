@@ -9,8 +9,8 @@ public abstract class CardWithHealth extends Card{
 
     protected int health;
 
-    public CardWithHealth(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull Integer health) {
-        super(name, manaCost, imgUrl);
+    public CardWithHealth(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull Integer health) {
+        super(id, name, manaCost, imgUrl);
         this.health = health;
     }
 

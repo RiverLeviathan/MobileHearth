@@ -14,8 +14,8 @@ public class Weapon extends Card {
 
     protected int damage, durability;
 
-    public Weapon(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull Integer damage, @NonNull  Integer durability) {
-        super(name, manaCost, imgUrl);
+    public Weapon(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull Integer damage, @NonNull  Integer durability) {
+        super(id, name, manaCost, imgUrl);
 
         this.damage = damage;
         this.durability = durability;
@@ -34,7 +34,7 @@ public class Weapon extends Card {
     }
 
     @NonNull
-    public static Weapon from(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull Integer damage, @NonNull  Integer durability){
-        return new Weapon(name, manaCost, imgUrl, damage, durability);
+    public static Weapon from(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull Integer damage, @NonNull  Integer durability){
+        return new Weapon(id, name, manaCost, imgUrl, damage, durability);
     }
 }

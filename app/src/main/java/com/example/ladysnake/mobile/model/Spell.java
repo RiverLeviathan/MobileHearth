@@ -10,13 +10,13 @@ import com.google.gson.JsonObject;
 
 public class Spell extends DescribedCard {
 
-    public Spell(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description) {
-        super(name, manaCost, imgUrl, description);
+    public Spell(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description) {
+        super(id, name, manaCost, imgUrl, description);
     }
 
     @NonNull
-    public static Spell from(@NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description){
-        return new Spell(name, manaCost, imgUrl, description);
+    public static Spell from(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description){
+        return new Spell(id, name, manaCost, imgUrl, description);
     }
 
     @Override
