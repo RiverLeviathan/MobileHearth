@@ -93,9 +93,9 @@ public class DisplayCardDetails extends AppCompatActivity {
         this.state = State.from(
             findViewById(R.id.cardName),
             findViewById(R.id.cardImage),
-            findViewById(R.id.factionLabel),
-            findViewById(R.id.typeLabel),
-            findViewById(R.id.raceLabel)
+            findViewById(R.id.factionValue),
+            findViewById(R.id.typeValue),
+            findViewById(R.id.raceValue)
         );
 
         this.setupView(this.state, this.statHolder);
@@ -135,13 +135,12 @@ public class DisplayCardDetails extends AppCompatActivity {
                 return;
             }
 
-            Log.e(TAG, jsonArray.get(0).toString());
-            return;
-//            JsonObject json = jsonArray.get(0).getAsJsonObject();
+            JsonObject json = jsonArray.get(0).getAsJsonObject();
 
-//            state.getFactionTextView().setText(json.get(FACTION).getAsString());
-//            state.getTypeTextView().setText(json.get(TYPE).getAsString());
-//            state.getRaceTextView().setText(json.get(RACE).getAsString());
+            String faction = json.get(FACTION) == null ? "∅" : json.get(FACTION).getAsString();
+            state.getFactionTextView().setText(faction);
+            state.getTypeTextView().setText(json.get(TYPE).getAsString());
+            state.getRaceTextView().setText(json.get(RACE).getAsString());
         });
     }
 
