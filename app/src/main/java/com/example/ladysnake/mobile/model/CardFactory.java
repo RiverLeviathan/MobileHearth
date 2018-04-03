@@ -54,7 +54,7 @@ public abstract class CardFactory {
          * @return the constructed {@link CardType}
          */
         public static CardType from(String str){
-            return TYPES.get(WordUtils.capitalizeFully(str));
+            return TYPES.get(/*WordUtils.capitalizeFully(*/str/*)*/);
         }
     }
 
@@ -95,6 +95,7 @@ public abstract class CardFactory {
             case ENCHANTMENT:
                 return fromEnchantment(json);
             default:
+                Log.e(TAG, "Couldn't instantiate a Card for " + json.toString());
                 return null;
         }
     }
@@ -178,7 +179,7 @@ public abstract class CardFactory {
     }
 
     @Nullable
-    protected static Enchantment fromEnchantment(@NonNull JsonObject json){
+    protected static Enchantment fromEnchantment(@NonNull JsonObject json){//TODO: Modify Enchantment so that it doesn't require an image
         try{
             String id = json.get(Enchantment.ID).getAsString();
             String name = json.get(Enchantment.NAME).getAsString();

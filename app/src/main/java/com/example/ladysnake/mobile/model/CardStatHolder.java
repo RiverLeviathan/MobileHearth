@@ -202,8 +202,8 @@ public class CardStatHolder {
     }
 
     @NonNull
-    protected static CardStatHolder from(Enchantment spell){
-        JsonObject json = spell.toJson();
+    protected static CardStatHolder from(Enchantment enchantment){
+        JsonObject json = enchantment.toJson();
         CardStatHolder ret = new CardStatHolder(
             json.get(NAME).getAsString(),
             json.get(IMG_URL).getAsString(),
@@ -211,7 +211,7 @@ public class CardStatHolder {
             json.get(DESCRIPTION).getAsString()
         );
 
-        ret.addStat(getMappedName(HeroPower.MANA_COST), json.get(Enchantment.MANA_COST).getAsString());
+        ret.addStat(getMappedName(Enchantment.MANA_COST), json.get(Enchantment.MANA_COST).getAsString());
 
         return ret;
     }

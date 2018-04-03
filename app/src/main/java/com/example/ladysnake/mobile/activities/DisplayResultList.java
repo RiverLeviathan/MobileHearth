@@ -92,6 +92,8 @@ public class DisplayResultList extends AppCompatActivity {
             Card card = CardFactory.from(object);
             if(card != null)
                 cards.add(card);
+            else
+                Log.e(TAG, "Couldn't create a Card for " + object);
         }
 
         this.adapter = new ResultListAdapter(this, R.layout.list_item_result, cards);
