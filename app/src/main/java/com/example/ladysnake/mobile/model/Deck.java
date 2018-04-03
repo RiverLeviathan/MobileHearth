@@ -2,11 +2,32 @@ package com.example.ladysnake.mobile.model;
 
 import android.support.annotation.NonNull;
 
+import com.example.ladysnake.mobile.tools.JsonObjectSerializable;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Deck {
+public class Deck implements JsonObjectSerializable {
+    public final static String NAME = "name";
+    public final static String CARDS = "cards";
+
     @NonNull protected String name;
     @NonNull protected List<Card> cards;
+
+    // Constructors
+    public Deck() {
+        this("deck");
+    }
+
+    public Deck(String name) {
+        this.name = name;
+        this.cards = new ArrayList<>();
+    }
 
     // To String
     @Override
@@ -57,6 +78,10 @@ public class Deck {
     }
 
     // Removers
+    public boolean removeCard(Card card) {
+        return cards.remove(card);
+    }
+
     public boolean removeCards(List<Card> cards) {
         return cards.removeAll(cards);
     }
@@ -70,4 +95,24 @@ public class Deck {
         this.cards = cards;
     }
 
+    @NonNull
+    @Override
+    public JsonObject toJson() {
+        JsonObject deckJson = new JsonObject();
+        JsonArray cardsJson = new JsonArray();
+        for (Card card : cards) {
+            cardsJson.add(card.toJson());
+        }
+        deckJson.addProperty(NAME, name);
+        deckJson.add(CARDS, cardsJson);
+        return deckJson;
+    }
+
+    public static Deck from(JsonObject jsonObject) {
+        Deck deck = new Deck(jsonObject.get(NAME).getAsString());
+        for (JsonElement card : jsonObject.getAsJsonArray(CARDS)) {
+            deck.cards.add(CardFactory.from(card.getAsJsonObject()));
+        }
+        return deck;
+    }
 }

@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.DisplayResultList" />
-        <activity android:name=".activities.DisplayCardDetails"></activity>
+        <activity android:name=".activities.DisplayCardDetails" />
+        <activity android:name=".activities.DisplayDeckCards"></activity>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
