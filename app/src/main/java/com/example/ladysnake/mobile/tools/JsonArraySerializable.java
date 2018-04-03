@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * An interface that describes objects that can be serialized to a {@link JsonArray}
+ * @author Ludwig GUERIN
  */
 public interface JsonArraySerializable extends Serializable {
     public JsonArray toJson();

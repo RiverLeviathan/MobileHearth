@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected State state;
+    protected TabPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
         setupView(this.state);
     }
+
+
 
     /**
      * Configures the view components based on the given {@link State} object
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
      * @param pager being the {@link TabLayout}'s  {@link ViewPager}
      */
     protected void setupAdapter(State state, TabLayout tabs, ViewPager pager){
-        TabPagerAdapter adapter = new TabPagerAdapter(getSupportFragmentManager());
+        this.adapter = new TabPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
 //        tabs.setupWithViewPager(pager, true);
         setupIcons(state, adapter);

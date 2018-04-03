@@ -41,11 +41,13 @@ public class CardStatHolder {
     @NonNull protected Map<String, String> stats;
     @NonNull protected String name, imgUrl, id;
     @Nullable protected String description;
+    @NonNull protected Card card;
 
-    protected CardStatHolder(){
+    protected CardStatHolder(@NonNull Card card){
         this.stats = new HashMap<>();
         this.setName("").setImgUrl("").setId("");
         this.description = null;
+        this.card = card;
     }
     protected CardStatHolder setName(@NonNull String name){
         this.name = name;
@@ -78,20 +80,21 @@ public class CardStatHolder {
 
         return this;
     }
-    protected CardStatHolder(@NonNull String name, @NonNull String url){
-        this();
+    protected CardStatHolder(@NonNull Card card, @NonNull String name, @NonNull String url){
+        this(card);
         this.setName(name).setImgUrl(url);
     }
-    protected CardStatHolder(@NonNull String name, @NonNull String url, @NonNull String id){
-        this(name, url);
+    protected CardStatHolder(@NonNull Card card, @NonNull String name, @NonNull String url, @NonNull String id){
+        this(card, name, url);
         this.setId(id);
     }
-    protected CardStatHolder(@NonNull String name, @NonNull String url, @NonNull String id, @NonNull String description){
-        this(name, url, id);
+    protected CardStatHolder(@NonNull Card card, @NonNull String name, @NonNull String url, @NonNull String id, @NonNull String description){
+        this(card, name, url, id);
         this.setDescription(description);
     }
 
 
+    @NonNull public Card getCard(){ return this.card; }
     @Nullable public String getStat(String key){ return this.stats.get(key); }
     @NonNull public String getName(){ return this.name; }
     @NonNull public String getImgUrl(){ return this.imgUrl; }
@@ -127,6 +130,7 @@ public class CardStatHolder {
     protected static CardStatHolder from(Hero hero){
         JsonObject json = hero.toJson();
         CardStatHolder ret = new CardStatHolder(
+            hero,
             json.get(NAME).getAsString(),
             json.get(IMG_URL).getAsString(),
             json.get(ID).getAsString()
@@ -142,6 +146,7 @@ public class CardStatHolder {
     protected static CardStatHolder from(Minion minion){
         JsonObject json = minion.toJson();
         CardStatHolder ret = new CardStatHolder(
+            minion,
             json.get(NAME).getAsString(),
             json.get(IMG_URL).getAsString(),
             json.get(ID).getAsString(),
@@ -159,6 +164,7 @@ public class CardStatHolder {
     protected static CardStatHolder from(Spell spell){
         JsonObject json = spell.toJson();
         CardStatHolder ret = new CardStatHolder(
+            spell,
             json.get(NAME).getAsString(),
             json.get(IMG_URL).getAsString(),
             json.get(ID).getAsString(),
@@ -174,6 +180,7 @@ public class CardStatHolder {
     protected static CardStatHolder from(Weapon weapon){
         JsonObject json = weapon.toJson();
         CardStatHolder ret = new CardStatHolder(
+            weapon,
             json.get(NAME).getAsString(),
             json.get(IMG_URL).getAsString(),
             json.get(ID).getAsString()
@@ -187,9 +194,10 @@ public class CardStatHolder {
     }
 
     @NonNull
-    protected static CardStatHolder from(HeroPower spell){
-        JsonObject json = spell.toJson();
+    protected static CardStatHolder from(HeroPower heroPower){
+        JsonObject json = heroPower.toJson();
         CardStatHolder ret = new CardStatHolder(
+                heroPower,
             json.get(NAME).getAsString(),
             json.get(IMG_URL).getAsString(),
             json.get(ID).getAsString(),
@@ -205,6 +213,7 @@ public class CardStatHolder {
     protected static CardStatHolder from(Enchantment enchantment){
         JsonObject json = enchantment.toJson();
         CardStatHolder ret = new CardStatHolder(
+            enchantment,
             json.get(NAME).getAsString(),
             Enchantment.DEFAULT_URL/*json.get(IMG_URL).getAsString()*/,
             json.get(ID).getAsString(),

@@ -8,13 +8,16 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
+/**
+ * @author Ludwig GUERIN
+ */
 public class JsonObjectReader extends FileReader {
     public JsonObjectReader(@NonNull Context context) { super(context); }
 
     /**
-     *
-     * @param filePath
-     * @return
+     * Reads a file that contains a JSON object
+     * @param filePath being the path to read from
+     * @return the parsed {@link JsonObject}
      * @throws IOException
      */
     public JsonObject readAsJsonObject(@NonNull String filePath) throws IOException {

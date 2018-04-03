@@ -3,6 +3,7 @@ package com.example.ladysnake.mobile.model;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.ladysnake.mobile.tools.JsonArrayReader;
 import com.example.ladysnake.mobile.tools.JsonArraySerializable;
 import com.example.ladysnake.mobile.tools.JsonObjectReader;
 import com.google.gson.JsonArray;
@@ -55,6 +56,16 @@ public class DeckList implements JsonArraySerializable {
         decks.removeAll(decks);
     }
 
+
+    public Deck getDeck(String deckName){
+        for(Deck deck : this.decks){
+            if(deck.getName().equals(deckName))
+                return deck;
+        }
+
+        return null;
+    }
+
     public static DeckList from(JsonArray jsonArray) {
         DeckList deckList = new DeckList();
         for (JsonElement deck : jsonArray) {
@@ -63,15 +74,14 @@ public class DeckList implements JsonArraySerializable {
         return deckList;
     }
 
-    public static DeckList fromFile(String file, Context context) {
+    public static DeckList fromFile(String file, Context context)/* throws IOException*/ {
+        JsonArray res = null;
         try {
-            JsonObjectReader reader = new JsonObjectReader(context);
-            JsonObject jsonObject = reader.readAsJsonObject(file);
-            return DeckList.from(jsonObject.getAsJsonArray());
+            res = JsonArrayReader.from(context).readToJson(file);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            return new DeckList();
         }
+        return DeckList.from(res);
     }
 
 }

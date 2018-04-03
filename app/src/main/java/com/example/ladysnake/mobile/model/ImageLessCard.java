@@ -4,6 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+/**
+ * A class that describes cards w/o image
+ * @author Ludwig GUERIN
+ */
 public class ImageLessCard extends Card {
     public final static String DEFAULT_URL = "https://www.google.fr";
 

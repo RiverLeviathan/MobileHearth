@@ -15,6 +15,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.CharBuffer;
 
+/**
+ * A class that allows you to read a JSON array from a file
+ * @author Ludwig GUERIN
+ */
 public class JsonArrayReader extends FileReader{
     protected Context context;
 

@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * An interface that describes objects that can be serialized to a {@link JsonObject}
+ * @author Ludwig GUERIN
  */
 public interface JsonObjectSerializable extends Serializable {
     @NonNull

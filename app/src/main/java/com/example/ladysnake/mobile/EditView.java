@@ -7,14 +7,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.ladysnake.mobile.activities.DisplayDeckCards;
 import com.example.ladysnake.mobile.activities.DisplayResultList;
+import com.example.ladysnake.mobile.activities.NewDeckActivity;
+import com.example.ladysnake.mobile.model.Deck;
 import com.example.ladysnake.mobile.model.DeckList;
 import com.example.ladysnake.mobile.tools.DeckAdapter;
 import com.example.ladysnake.mobile.tools.FileWriter;
+import com.example.ladysnake.mobile.tools.JsonArrayReader;
 import com.example.ladysnake.mobile.tools.JsonObjectReader;
 import com.example.ladysnake.mobile.tools.ResourceAwareFragment;
 import com.google.gson.JsonArray;
@@ -35,15 +39,23 @@ public class EditView extends ResourceAwareFragment {
 
     public static class State{
         protected ListView decklist;
+        protected ImageButton newDeckButton;
 
-        public State(ListView decklist){
+        public State(ListView decklist, ImageButton b){
             this.decklist = decklist;
+            this.newDeckButton = b;
         }
-        public State(View decklist){
-            this((ListView) (decklist));
+        public State(View decklist, View b){
+            this(
+                (ListView) (decklist),
+                (ImageButton) b
+            );
         }
-        public static State from(ListView decklist){ return new State(decklist); }
-        public static State from(View decklist){ return new State(decklist); }
+        public static State from(ListView decklist, ImageButton b){ return new State(decklist, b); }
+        public static State from(View decklist, View b){ return new State(decklist, b); }
+
+        public ListView getDecklist() { return decklist; }
+        public ImageButton getNewDeckButton() { return newDeckButton; }
     }
 
     protected State state;
@@ -52,22 +64,42 @@ public class EditView extends ResourceAwareFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_view, null);
-        this.state = State.from(view.findViewById(R.id.decklist));
+        this.state = State.from(
+            view.findViewById(R.id.decklist),
+            view.findViewById(R.id.newDeck)
+        );
         view.setTag(state);
+
+        setupView(state);
         return view;
     }
 
     public void setupView(State state) {
-        JsonObjectReader reader = new JsonObjectReader(getContext());
+        DeckList deckList;
         try {
-            JsonObject jsonObject = reader.readAsJsonObject(DECKLIST_FILEPATH);
-            DeckList.from(jsonObject.getAsJsonArray());
+            JsonArray jsonArray = JsonArrayReader.from(getContext()).readToJson(DECKLIST_FILEPATH);
+            deckList = DeckList.from(jsonArray);
         } catch (IOException e) {
-            DeckList deckList = new DeckList();
+            deckList = new DeckList();
         }
-        state.decklist.setAdapter(new DeckAdapter(getContext(), R.layout.list_item_deck));
-        state.decklist.setOnItemClickListener((parent, view, position, id) -> {
 
+        DeckAdapter adapter = new DeckAdapter(getContext(), R.layout.list_item_deck, deckList.getDecks());
+        state.getDecklist().setAdapter(adapter);
+        state.getDecklist().setOnItemClickListener((parent, view, position, id) -> {
+            Deck deck = adapter.getItem(position);
+            goEditDeck(deck.toJson());
+        });
+
+        setupButton(state);
+    }
+
+    protected void setupButton(State state){
+        ImageButton btn = state.getNewDeckButton();
+        btn.setOnClickListener(view -> {
+           //TODO: Go to new activity that creates deck
+            Intent intent = new Intent(getContext(), NewDeckActivity.class);
+            intent.setAction(Intent.ACTION_VIEW);
+            getContext().startActivity(intent);
         });
     }
 
@@ -78,12 +110,12 @@ public class EditView extends ResourceAwareFragment {
             FileWriter.from(getContext()).writeTo(DECK_FILEPATH, json.toString());
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
-            Toast.makeText(getContext(), "Erreur fatale pendant l'écriture dans un fichier", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), FileWriter.ERR_MSG, Toast.LENGTH_SHORT).show();
             return;
         }
         intent.putExtra(EXTRA_FILEPATH, DECK_FILEPATH);
 
-        Log.v(TAG, "Starting activity : DisplayResultList");
+        Log.v(TAG, "Starting activity : DisplayDeckCards");
         getContext().startActivity(intent);
     }
 }

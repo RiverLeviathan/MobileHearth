@@ -13,9 +13,14 @@ import java.util.List;
  * @author Ludwig GUERIN
  */
 public class TabPagerAdapter extends FragmentPagerAdapter {
+    public SearchView searchView = SearchView.make();
+    public EditView editView = EditView.make();
+
     List<ResourceAwareFragment> fragments = new ArrayList<ResourceAwareFragment>(){{
-        add(0, SearchView.make().withRes(R.drawable.search));
-        add(1, EditView.make().withRes(R.drawable.edit));
+        searchView.withRes(R.drawable.search);
+        editView.withRes(R.drawable.edit);
+        add(0, searchView);
+        add(1, editView);
     }};
 
     public TabPagerAdapter(FragmentManager fm) { super(fm); }

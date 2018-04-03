@@ -8,6 +8,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * A utility class used to read files
+ * @author Ludwig GUERIN
+ */
 public class FileReader {
     public final static String TAG = "FileReader CUSTOM";
     public final static String ERR_MSG = "Erreur fatale pendant la lecture d'un fichier";

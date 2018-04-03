@@ -25,4 +25,8 @@
     <string name="raceLabel">Race : </string>
     <string name="loreLabel">Lore :</string>
     <string name="descriptionLabel">Description : </string>
+    <string name="nom_du_deck">Nom du deck</string>
+    <string name="cr_er">Créer</string>
+    <string name="ajouter_un_deck">Ajouter à un deck</string>
+    <string name="valider">Valider</string>
 </resources>

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Deck implements JsonObjectSerializable {
+    public final static int MAX = 60;
+
     public final static String NAME = "name";
     public final static String CARDS = "cards";
 
@@ -70,10 +72,16 @@ public class Deck implements JsonObjectSerializable {
 
     // Adders
     public boolean addCard(Card card) {
+        if(this.cards.size()+1 >= MAX)
+            return false;
+
         return cards.add(card);
     }
 
     public boolean addCards(List<Card> cards) {
+        if(this.cards.size()+cards.size() >= MAX)
+            return false;
+
         return cards.addAll(cards);
     }
 

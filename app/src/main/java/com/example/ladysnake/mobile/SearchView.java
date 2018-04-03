@@ -122,6 +122,12 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         return view;
     }
 
+    @Override
+    public void onResume() {
+        setupView(this.state);
+        super.onResume();
+    }
+
     /**
      * Retrieves the (correctly formatted) text input's value
      * @param state being the {@link State} to use (as if it was this {@link SearchView}'s {@link State})

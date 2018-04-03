@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.ladysnake.mobile.EditView;
 import com.example.ladysnake.mobile.R;
@@ -45,38 +46,44 @@ public class DeckAdapter extends ArrayAdapter<Deck>{
     }
 
     public static class State{
-        protected ImageView deckedEditButton;
+        protected TextView cardName;
+        protected ImageView icon;
 
-        public State(ImageView deckedEditButton){
-            this.deckedEditButton = deckedEditButton;
+        public State(TextView t, ImageView i){
+            this.cardName = t;
+            this.icon = i;
         }
-        public State(View deckedEditButton){
-            this((ImageView) (deckedEditButton));
+        public State(View t, View i){
+            this(
+                (TextView)t,
+                (ImageView)i
+            );
         }
-        public static EditView.State from(ImageView deckedEditButton){ return new EditView.State(deckedEditButton); }
-        public static EditView.State from(View deckedEditButton){ return new EditView.State(deckedEditButton); }
+        public static State from(TextView t, ImageView i){ return new State(t, i); }
+        public static State from(View t, View i){ return new State(t, i); }
+
+        public TextView getCardName() { return cardName; }
+        public ImageView getIcon() { return icon; }
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View row = convertView;
-        ResultListAdapter.State state;
+        State state;
 
         if(row == null){
             row = LayoutInflater.from(getContext()).inflate(R.layout.list_item_deck, null);
-            state = ResultListAdapter.State.from(
+            state = State.from(
                     row.findViewById(R.id.textView),
                     row.findViewById(R.id.imageButton)
             );
             row.setTag(state);
         }else
-            state = (ResultListAdapter.State)row.getTag();
+            state = (State)row.getTag();
 
         Deck deck = getItem(position);
-        state.getTextView().setText(deck.getName());
-
-        state.getIcon().setOnClickListener();
+        state.getCardName().setText(deck.getName());
 
         return row;
     }

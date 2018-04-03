@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 
 /**
  * A utility class that is used to write to a file
+ * @author Ludwig GUERIN
  */
 public class FileWriter {
     public final static String TAG = "FileWriter CUSTOM";

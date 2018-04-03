@@ -20,6 +20,7 @@ import com.example.ladysnake.mobile.model.Card;
 import com.example.ladysnake.mobile.model.CardFactory;
 import com.example.ladysnake.mobile.model.CardStatHolder;
 import com.example.ladysnake.mobile.tools.FileReader;
+import com.example.ladysnake.mobile.tools.FileWriter;
 import com.example.ladysnake.mobile.tools.JsonObjectReader;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -33,8 +34,14 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Ludwig GUERIN
+ */
 public class DisplayCardDetails extends AppCompatActivity {
     public final static String TAG = "DisplayCardDetails";
+
+    public final static String FILE_PATH_EXTRA = "filePath";
+    public final static String FILE_PATH = "DisplayCardDetails.JsonObject.json";
 
     public static class State{
         protected TextView nameTextView, factionTextView, typeTextView, raceTextView, loreTextView, descriptionTextView;
@@ -139,6 +146,26 @@ public class DisplayCardDetails extends AppCompatActivity {
         .asJsonArray(Charset.forName("utf-8"));
 
     }
+
+
+
+    public void addToDeck(View view) {
+        Intent intent = new Intent(this, AddToDeckActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+
+        try {
+            FileWriter.from(this).writeTo(FILE_PATH, this.statHolder.getCard().toJson().toString());
+        } catch (IOException e) {
+//            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(this, FileReader.ERR_MSG, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        intent.putExtra(FILE_PATH_EXTRA, FILE_PATH);
+        this.startActivity(intent);
+    }
+
 
     protected void setupView(State state, CardStatHolder statHolder){
         state.getNameTextView().setText(statHolder.getName());
