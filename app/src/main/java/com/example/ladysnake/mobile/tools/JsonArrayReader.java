@@ -4,28 +4,28 @@ package com.example.ladysnake.mobile.tools;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.CharBuffer;
 
-public class JsonArrayReader {
+public class JsonArrayReader extends FileReader{
     protected Context context;
 
-    public JsonArrayReader(@NonNull Context context){
-        this.context = context;
-    }
+    public JsonArrayReader(Context context) { super(context); }
 
     public Context getContext(){ return context; }
 
-    public JsonArray readFrom(@NonNull String filePath) throws FileNotFoundException {
-        FileInputStream fs = getContext().openFileInput(filePath);
-        InputStreamReader reader = new InputStreamReader(fs);
-
-        //TODO: Read from file, cast and return
-        return null;
+    public JsonArray readToJson(@NonNull String filePath) throws IOException {
+        String content = super.readFrom(filePath);
+        return (new Gson()).fromJson(content, JsonArray.class);
     }
+
+    public static JsonArrayReader from (@NonNull Context context){ return new JsonArrayReader(context); }
 }

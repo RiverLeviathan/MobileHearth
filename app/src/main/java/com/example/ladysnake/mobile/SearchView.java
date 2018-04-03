@@ -209,15 +209,15 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         Intent intent = new Intent(getContext(), DisplayResultList.class);
         intent.setAction(Intent.ACTION_VIEW);
 //        intent.putExtra(JSON_ARRAY_EXTRA, json.toString());
-        FileWriter writer = FileWriter.from(getContext());
         try {
-            writer.writeTo(FILE_PATH, json.toString());
+            FileWriter.from(getContext()).writeTo(FILE_PATH, json.toString());
         } catch (IOException e) {
 //            e.printStackTrace();
             Log.e(TAG, e.getMessage());
             Toast.makeText(getContext(), "Erreur fatale pendant l'écriture dans un fichier", Toast.LENGTH_SHORT).show();
             return;
         }
+        intent.putExtra(FILE_PATH_EXTRA, FILE_PATH);
 
         Log.v(TAG, "Starting activity : DisplayResultList");
         getContext().startActivity(intent);

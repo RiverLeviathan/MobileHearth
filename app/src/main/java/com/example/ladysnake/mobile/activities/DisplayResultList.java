@@ -12,12 +12,14 @@ import com.example.ladysnake.mobile.R;
 import com.example.ladysnake.mobile.SearchView;
 import com.example.ladysnake.mobile.model.Card;
 import com.example.ladysnake.mobile.model.CardFactory;
+import com.example.ladysnake.mobile.tools.JsonArrayReader;
 import com.example.ladysnake.mobile.tools.ResultListAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,8 +71,17 @@ public class DisplayResultList extends AppCompatActivity {
             return;
         }
 
-        String resultString = intent.getStringExtra(SearchView.JSON_ARRAY_EXTRA);
-        this.resultData = new Gson().fromJson(resultString, JsonArray.class);
+//        String resultString = intent.getStringExtra(SearchView.JSON_ARRAY_EXTRA);
+//        this.resultData = new Gson().fromJson(resultString, JsonArray.class);
+        String filePath = intent.getStringExtra(SearchView.FILE_PATH_EXTRA);
+        try {
+            this.resultData = JsonArrayReader.from(this).readToJson(filePath);
+        } catch (IOException e) {
+//            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(this, "Erreur fatale pendant l'écriture dans un fichier", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         this.state = State.from(
             findViewById(R.id.searchResultListView)
