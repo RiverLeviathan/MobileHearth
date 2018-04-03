@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.ladysnake.mobile.activities.DisplayResultList;
 import com.example.ladysnake.mobile.tools.ApiAware;
+import com.example.ladysnake.mobile.tools.FileWriter;
 import com.example.ladysnake.mobile.tools.ResourceAwareFragment;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -28,6 +29,7 @@ import com.koushikdutta.ion.builder.Builders;
 import com.koushikdutta.ion.builder.LoadBuilder;
 import com.koushikdutta.ion.future.ResponseFuture;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,8 @@ import java.util.regex.Pattern;
 public class SearchView extends ResourceAwareFragment implements ApiAware{
     public final static String TAG = "SearchView";
     public final static String JSON_ARRAY_EXTRA = "JsonObject";
+    public final static String FILE_PATH_EXTRA = "filePath";
+    public final static String FILE_PATH = "SearchView.JsonArray.json";
 
     /**
      * An helper method that crafts a complete URL to the API based on a URI
@@ -204,7 +208,16 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
     protected void goShowResults(JsonArray json){
         Intent intent = new Intent(getContext(), DisplayResultList.class);
         intent.setAction(Intent.ACTION_VIEW);
-        intent.putExtra(JSON_ARRAY_EXTRA, json.toString());
+//        intent.putExtra(JSON_ARRAY_EXTRA, json.toString());
+        FileWriter writer = FileWriter.from(getContext());
+        try {
+            writer.writeTo(FILE_PATH, json.toString());
+        } catch (IOException e) {
+//            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(getContext(), "Erreur fatale pendant l'écriture dans un fichier", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Log.v(TAG, "Starting activity : DisplayResultList");
         getContext().startActivity(intent);
