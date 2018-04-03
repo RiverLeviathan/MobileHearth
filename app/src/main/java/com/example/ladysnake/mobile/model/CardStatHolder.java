@@ -206,7 +206,7 @@ public class CardStatHolder {
         JsonObject json = enchantment.toJson();
         CardStatHolder ret = new CardStatHolder(
             json.get(NAME).getAsString(),
-            json.get(IMG_URL).getAsString(),
+            Enchantment.DEFAULT_URL/*json.get(IMG_URL).getAsString()*/,
             json.get(ID).getAsString(),
             json.get(DESCRIPTION).getAsString()
         );

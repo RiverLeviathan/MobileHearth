@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,8 @@ import com.example.ladysnake.mobile.R;
 import com.example.ladysnake.mobile.model.Card;
 import com.example.ladysnake.mobile.model.CardFactory;
 import com.example.ladysnake.mobile.model.CardStatHolder;
+import com.example.ladysnake.mobile.tools.FileReader;
+import com.example.ladysnake.mobile.tools.JsonObjectReader;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,6 +28,7 @@ import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.future.ResponseFuture;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Set;
@@ -33,29 +37,31 @@ public class DisplayCardDetails extends AppCompatActivity {
     public final static String TAG = "DisplayCardDetails";
 
     public static class State{
-        protected TextView nameTextView, factionTextView, typeTextView, raceTextView, loreTextView;
+        protected TextView nameTextView, factionTextView, typeTextView, raceTextView, loreTextView, descriptionTextView;
         protected ImageView imageView;
 
-        public State(TextView n, ImageView i, TextView f, TextView t, TextView r, TextView l){
+        public State(TextView n, ImageView i, TextView f, TextView t, TextView r, TextView l, TextView d){
             this.nameTextView = n;
             this.imageView = i;
             this.factionTextView = f;
             this.typeTextView = t;
             this.raceTextView = r;
             this.loreTextView = l;
+            this.descriptionTextView = d;
         }
-        public State(View n, View i, View f, View t, View r, View l){
+        public State(View n, View i, View f, View t, View r, View l, View d){
             this(
                 (TextView)n,
                 (ImageView)i,
                 (TextView)f,
                 (TextView)t,
                 (TextView)r,
-                (TextView)l
+                (TextView)l,
+                (TextView)d
             );
         }
-        public static State from(TextView n, ImageView i, TextView f, TextView t, TextView r, TextView l){ return new State(n, i, f, t, r, l); }
-        public static State from(View n, View i, View f, View t, View r, View l){ return new State(n, i, f, t, r, l); }
+        public static State from(TextView n, ImageView i, TextView f, TextView t, TextView r, TextView l, TextView d){ return new State(n, i, f, t, r, l, d); }
+        public static State from(View n, View i, View f, View t, View r, View l, View d){ return new State(n, i, f, t, r, l, d); }
 
         public TextView getNameTextView() { return nameTextView; }
         public ImageView getImageView() { return imageView; }
@@ -63,6 +69,7 @@ public class DisplayCardDetails extends AppCompatActivity {
         public TextView getTypeTextView() { return typeTextView; }
         public TextView getRaceTextView() { return raceTextView; }
         public TextView getLoreTextView() { return loreTextView; }
+        public TextView getDescriptionTextView() { return descriptionTextView; }
     }
 
     protected State state;
@@ -83,7 +90,18 @@ public class DisplayCardDetails extends AppCompatActivity {
             return;
         }
 
-        String data = intent.getStringExtra(DisplayResultList.CARD_EXTRA);
+//        String data = intent.getStringExtra(DisplayResultList.CARD_EXTRA);
+        String filePath = intent.getStringExtra(DisplayResultList.FILE_PATH_EXTRA);
+        JsonObject data;
+        try {
+            data = JsonObjectReader.from(this).readAsJsonObject(filePath);
+        } catch (IOException e) {
+//            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(this, FileReader.ERR_MSG, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Card card = CardFactory.from(data);
         if(card == null){
             Log.v(TAG, "Attempted to create a card from an invalid String");
@@ -100,7 +118,8 @@ public class DisplayCardDetails extends AppCompatActivity {
             findViewById(R.id.factionValue),
             findViewById(R.id.typeValue),
             findViewById(R.id.raceValue),
-            findViewById(R.id.loreValue)
+            findViewById(R.id.loreValue),
+            findViewById(R.id.descriptionValue)
         );
 
         this.setupView(this.state, this.statHolder);
@@ -146,15 +165,23 @@ public class DisplayCardDetails extends AppCompatActivity {
             state.getTypeTextView().setText(convertStat(json.get(TYPE)));
             state.getRaceTextView().setText(convertStat(json.get(RACE)));
             state.getLoreTextView().setText(convertStat(json.get(LORE)));
+            state.getDescriptionTextView().setText(
+                Html.fromHtml(
+                    convertStat(statHolder.getDescription()).replace("\n", "<br/>")
+                )
+            );
         });
     }
 
     private String convertStat(JsonElement element){
-        String value = String.valueOf(element);
+        return convertStat(String.valueOf(element));
+    }
+
+    private String convertStat(String value){
         if(value == null || value == "null")
             return "∅";
 
-        return value.replaceFirst("\"", "").replaceFirst("\"", "");
+        return value.replaceFirst("^\"(.*)\"$", "$1");
     }
 
     public final static String FACTION = "playerClass";//"faction";

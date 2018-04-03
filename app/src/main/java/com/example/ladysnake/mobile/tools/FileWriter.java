@@ -1,8 +1,11 @@
 package com.example.ladysnake.mobile.tools;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,6 +15,10 @@ import java.io.OutputStreamWriter;
  * A utility class that is used to write to a file
  */
 public class FileWriter {
+    public final static String TAG = "FileWriter CUSTOM";
+    public final static String ERR_MSG = "Erreur fatale pendant l'écriture d'un fichier";
+    public final static String BASE_PATH = "";//Environment.getExternalStorageDirectory() + File.separator;
+
     protected Context context;
 
     public FileWriter(@NonNull Context context){
@@ -28,12 +35,10 @@ public class FileWriter {
      * @throws IOException
      */
     public FileWriter writeTo(@NonNull String fileName, @NonNull String content) throws IOException {
-        FileOutputStream fs = getContext().openFileOutput(fileName, Context.MODE_PRIVATE);
-        OutputStreamWriter os = new OutputStreamWriter(fs);
-        os.write(content);
-
-        os.flush();
-        os.close();
+        String path = BASE_PATH + fileName;
+        FileOutputStream fs = this.getContext().openFileOutput(path, Context.MODE_PRIVATE);
+        fs.write(content.getBytes(), 0, content.getBytes().length);
+        Log.v(TAG, "Wrote to "+fileName);
         fs.close();
 
         return this;

@@ -24,4 +24,5 @@
     <string name="typeLabel">Type : </string>
     <string name="raceLabel">Race : </string>
     <string name="loreLabel">Lore :</string>
+    <string name="descriptionLabel">Description : </string>
 </resources>

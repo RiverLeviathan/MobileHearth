@@ -9,10 +9,14 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 
 public class JsonObjectReader extends FileReader {
-    public JsonObjectReader(Context context) {
-        super(context);
-    }
+    public JsonObjectReader(@NonNull Context context) { super(context); }
 
+    /**
+     *
+     * @param filePath
+     * @return
+     * @throws IOException
+     */
     public JsonObject readAsJsonObject(@NonNull String filePath) throws IOException {
         String content = super.readFrom(filePath);
         return (new Gson()).fromJson(content, JsonObject.class);

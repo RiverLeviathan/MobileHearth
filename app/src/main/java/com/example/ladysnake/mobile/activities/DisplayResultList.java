@@ -12,6 +12,8 @@ import com.example.ladysnake.mobile.R;
 import com.example.ladysnake.mobile.SearchView;
 import com.example.ladysnake.mobile.model.Card;
 import com.example.ladysnake.mobile.model.CardFactory;
+import com.example.ladysnake.mobile.tools.FileReader;
+import com.example.ladysnake.mobile.tools.FileWriter;
 import com.example.ladysnake.mobile.tools.JsonArrayReader;
 import com.example.ladysnake.mobile.tools.ResultListAdapter;
 import com.google.gson.Gson;
@@ -30,6 +32,8 @@ import java.util.List;
 public class DisplayResultList extends AppCompatActivity {
     public final static String TAG = "DisplayResultList";
     public final static String CARD_EXTRA = "card";
+    public final static String FILE_PATH_EXTRA = "filePath";
+    public final static String FILE_PATH = "DisplayResultList.JsonObject.json";
 
     /**
      * A class that gives access to the relevant UI components
@@ -76,10 +80,11 @@ public class DisplayResultList extends AppCompatActivity {
         String filePath = intent.getStringExtra(SearchView.FILE_PATH_EXTRA);
         try {
             this.resultData = JsonArrayReader.from(this).readToJson(filePath);
+            Log.v(TAG, "Data: " + this.resultData);
         } catch (IOException e) {
 //            e.printStackTrace();
             Log.e(TAG, e.getMessage());
-            Toast.makeText(this, "Erreur fatale pendant l'écriture dans un fichier", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, FileReader.ERR_MSG, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -125,8 +130,18 @@ public class DisplayResultList extends AppCompatActivity {
         Intent intent = new Intent(this, DisplayCardDetails.class);
         intent.setAction(Intent.ACTION_VIEW);
 
-        Gson gson = new Gson();
-        intent.putExtra(CARD_EXTRA, gson.toJson(card.toJson()));
+//        Gson gson = new Gson();
+//        intent.putExtra(CARD_EXTRA, gson.toJson(card.toJson()));
+
+        try {
+            FileWriter.from(this).writeTo(FILE_PATH, card.toJson().toString());
+        } catch (IOException e) {
+//            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(this, FileWriter.ERR_MSG, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        intent.putExtra(FILE_PATH_EXTRA, FILE_PATH);
 
         Log.v(TAG, "Starting activity : DisplayCardDetails");
         startActivity(intent);

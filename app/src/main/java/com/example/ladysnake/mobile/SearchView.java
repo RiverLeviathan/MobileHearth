@@ -21,6 +21,7 @@ import com.example.ladysnake.mobile.activities.DisplayResultList;
 import com.example.ladysnake.mobile.tools.ApiAware;
 import com.example.ladysnake.mobile.tools.FileWriter;
 import com.example.ladysnake.mobile.tools.ResourceAwareFragment;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -210,11 +211,11 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         intent.setAction(Intent.ACTION_VIEW);
 //        intent.putExtra(JSON_ARRAY_EXTRA, json.toString());
         try {
-            FileWriter.from(getContext()).writeTo(FILE_PATH, json.toString());
+            FileWriter.from(getContext()).writeTo(FILE_PATH, (new Gson()).toJson(json));
         } catch (IOException e) {
 //            e.printStackTrace();
             Log.e(TAG, e.getMessage());
-            Toast.makeText(getContext(), "Erreur fatale pendant l'écriture dans un fichier", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), FileWriter.ERR_MSG, Toast.LENGTH_SHORT).show();
             return;
         }
         intent.putExtra(FILE_PATH_EXTRA, FILE_PATH);
@@ -237,7 +238,7 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         this.dispatchInfoRequest(state)
         .then((e, json)->{
             if(e != null) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, e.toString());
                 Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -286,8 +287,10 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
         ImageButton submit = state.getNameSubmitButton();
 
         nameInput.setOnEditorActionListener((v, actionId, event) -> {
-            if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
-                return submit.performClick();
+            if(event != null){
+                if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
+                    return submit.performClick();
+            }
 
             return false;
         });
@@ -303,6 +306,7 @@ public class SearchView extends ResourceAwareFragment implements ApiAware{
             .then((e, json) -> {
                 if(e != null) {
                     Log.e(TAG, e.getMessage());
+                    Log.e(TAG, "" + json);
                     Toast.makeText(getContext(), getString(R.string.api_fail), Toast.LENGTH_SHORT).show();
                     return;
                 }

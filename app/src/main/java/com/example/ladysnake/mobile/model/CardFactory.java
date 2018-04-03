@@ -184,10 +184,10 @@ public abstract class CardFactory {
             String id = json.get(Enchantment.ID).getAsString();
             String name = json.get(Enchantment.NAME).getAsString();
             Integer manaCost = json.get(Enchantment.MANA_COST).getAsInt();
-            String imgUrl = json.get(Enchantment.IMG_URL).getAsString();
+//            String imgUrl = json.get(Enchantment.IMG_URL).getAsString();
             String description = json.get(Enchantment.DESCRIPTION).getAsString();
 
-            return Enchantment.from(id, name, manaCost, imgUrl, description);
+            return Enchantment.from(id, name, manaCost,/* imgUrl,*/ description);
         }catch(Throwable t){
             return null;
         }

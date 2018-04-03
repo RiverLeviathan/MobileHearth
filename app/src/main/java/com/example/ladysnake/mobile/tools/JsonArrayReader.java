@@ -18,10 +18,16 @@ import java.nio.CharBuffer;
 public class JsonArrayReader extends FileReader{
     protected Context context;
 
-    public JsonArrayReader(Context context) { super(context); }
+    public JsonArrayReader(@NonNull Context context) { super(context); }
 
     public Context getContext(){ return context; }
 
+    /**
+     * Reads a file containing a JSON array
+     * @param filePath being the path to read from
+     * @return the parsed {@link JsonArray}
+     * @throws IOException
+     */
     public JsonArray readToJson(@NonNull String filePath) throws IOException {
         String content = super.readFrom(filePath);
         return (new Gson()).fromJson(content, JsonArray.class);

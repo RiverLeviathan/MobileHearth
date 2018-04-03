@@ -8,13 +8,13 @@ import com.google.gson.JsonObject;
  * A model that describes an enchantment card
  * @author Ludwig GUERIN
  */
-public class Enchantment extends DescribedCard {
-    public Enchantment(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description) {
-        super(id, name, manaCost, imgUrl, description);
+public class Enchantment extends ImageLessDecribedCard {
+    public Enchantment(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String description) {
+        super(id, name, manaCost, description);
     }
 
-    public static Enchantment from(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String imgUrl, @NonNull String description){
-        return new Enchantment(id, name, manaCost, imgUrl, description);
+    public static Enchantment from(@NonNull String id, @NonNull String name, @NonNull Integer manaCost, @NonNull String description){
+        return new Enchantment(id, name, manaCost, description);
     }
 
     @Override
