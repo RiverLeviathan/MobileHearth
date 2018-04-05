@@ -17,6 +17,7 @@ import com.example.ladysnake.mobile.activities.NewDeckActivity;
 import com.example.ladysnake.mobile.model.Deck;
 import com.example.ladysnake.mobile.model.DeckList;
 import com.example.ladysnake.mobile.tools.DeckAdapter;
+import com.example.ladysnake.mobile.tools.FileReader;
 import com.example.ladysnake.mobile.tools.FileWriter;
 import com.example.ladysnake.mobile.tools.JsonArrayReader;
 import com.example.ladysnake.mobile.tools.JsonObjectReader;
@@ -81,14 +82,23 @@ public class EditView extends ResourceAwareFragment {
             deckList = DeckList.from(jsonArray);
         } catch (IOException e) {
             deckList = new DeckList();
+            try {
+                FileWriter.from(getContext()).writeTo(DECKLIST_FILEPATH, deckList.toJson().toString());
+            } catch (IOException e1) {
+//                e1.printStackTrace();
+                Log.e(TAG, e1.getMessage());
+                Toast.makeText(getContext(), FileWriter.ERR_MSG, Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         DeckAdapter adapter = new DeckAdapter(getContext(), R.layout.list_item_deck, deckList.getDecks());
+        adapter.setEditView(this);
         state.getDecklist().setAdapter(adapter);
-        state.getDecklist().setOnItemClickListener((parent, view, position, id) -> {
-            Deck deck = adapter.getItem(position);
-            goEditDeck(deck.toJson());
-        });
+//        state.getDecklist().setOnItemClickListener((parent, view, position, id) -> {
+//            Deck deck = adapter.getItem(position);
+//            goEditDeck(deck.toJson());
+//        });
 
         setupButton(state);
     }
@@ -103,7 +113,13 @@ public class EditView extends ResourceAwareFragment {
         });
     }
 
-    protected void goEditDeck(JsonObject json){
+    @Override
+    public void onResume() {
+        setupView(this.state);
+        super.onResume();
+    }
+
+    public void goEditDeck(JsonObject json){
         Intent intent = new Intent(getContext(), DisplayDeckCards.class);
         intent.setAction(Intent.ACTION_VIEW);
         try {
@@ -117,5 +133,31 @@ public class EditView extends ResourceAwareFragment {
 
         Log.v(TAG, "Starting activity : DisplayDeckCards");
         getContext().startActivity(intent);
+    }
+
+    public void deleteDeck(Deck deck){
+        JsonArray jsonArray;
+        try {
+            jsonArray = JsonArrayReader.from(getContext()).readToJson(DECKLIST_FILEPATH);
+        } catch (IOException e) {
+//            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(getContext(), FileReader.ERR_MSG, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        DeckList deckList = DeckList.from(jsonArray);
+        deckList.removeDeck(deck);
+
+        try {
+            FileWriter.from(getContext()).writeTo(DECKLIST_FILEPATH, deckList.toJson().toString());
+        } catch (IOException e) {
+//                e1.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(getContext(), FileWriter.ERR_MSG, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        setupView(state);
     }
 }

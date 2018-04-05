@@ -47,24 +47,36 @@ public class DeckAdapter extends ArrayAdapter<Deck>{
 
     public static class State{
         protected TextView cardName;
-        protected ImageView icon;
+        protected ImageButton edit, delete;
 
-        public State(TextView t, ImageView i){
+        public State(TextView t, ImageButton e, ImageButton d){
             this.cardName = t;
-            this.icon = i;
+            this.edit = e;
+            this.delete = d;
         }
-        public State(View t, View i){
+        public State(View t, View e, View d){
             this(
                 (TextView)t,
-                (ImageView)i
+                (ImageButton)e,
+                (ImageButton)d
             );
         }
-        public static State from(TextView t, ImageView i){ return new State(t, i); }
-        public static State from(View t, View i){ return new State(t, i); }
+        public static State from(TextView t, ImageButton e, ImageButton d){ return new State(t, e, d); }
+        public static State from(View t, View e, View d){ return new State(t, e, d); }
 
         public TextView getCardName() { return cardName; }
-        public ImageView getIcon() { return icon; }
+        public ImageButton getEdit() { return edit; }
+        public ImageButton getDelete() { return delete; }
     }
+
+    protected EditView editView;
+
+    public DeckAdapter setEditView(@NonNull EditView editView){
+        this.editView = editView;
+        return this;
+    }
+
+    public EditView getEditView() { return editView; }
 
     @NonNull
     @Override
@@ -76,7 +88,8 @@ public class DeckAdapter extends ArrayAdapter<Deck>{
             row = LayoutInflater.from(getContext()).inflate(R.layout.list_item_deck, null);
             state = State.from(
                     row.findViewById(R.id.textView),
-                    row.findViewById(R.id.imageButton)
+                    row.findViewById(R.id.imageButton),
+                    row.findViewById(R.id.imageButton2)
             );
             row.setTag(state);
         }else
@@ -84,6 +97,10 @@ public class DeckAdapter extends ArrayAdapter<Deck>{
 
         Deck deck = getItem(position);
         state.getCardName().setText(deck.getName());
+
+        state.getEdit().setOnClickListener(view -> getEditView().goEditDeck(deck.toJson()));
+
+        state.getDelete().setOnClickListener(view ->  getEditView().deleteDeck(deck));
 
         return row;
     }

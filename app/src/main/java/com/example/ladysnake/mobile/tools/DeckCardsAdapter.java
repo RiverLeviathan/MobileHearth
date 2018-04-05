@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.ladysnake.mobile.EditView;
 import com.example.ladysnake.mobile.R;
 import com.example.ladysnake.mobile.activities.DisplayCardDetails;
+import com.example.ladysnake.mobile.activities.DisplayDeckCards;
 import com.example.ladysnake.mobile.activities.DisplayResultList;
 import com.example.ladysnake.mobile.model.Card;
 import com.example.ladysnake.mobile.model.Deck;
@@ -60,6 +61,14 @@ public class DeckCardsAdapter extends ArrayAdapter<Card> {
     }
 
     protected Deck deck;
+    protected DisplayDeckCards activity;
+
+    public DeckCardsAdapter setDisplayDeckCards(@NonNull DisplayDeckCards activity){
+        this.activity = activity;
+        return this;
+    }
+
+    public DisplayDeckCards getDisplayDeckCards(){ return activity; }
 
 
     public DeckCardsAdapter(@NonNull Context context, int resource) { super(context, resource); }
@@ -132,6 +141,7 @@ public class DeckCardsAdapter extends ArrayAdapter<Card> {
 
         try {
             FileWriter.from(getContext()).writeTo(EditView.DECKLIST_FILEPATH, deckList.toJson().toString());
+            getDisplayDeckCards().setupView(getDisplayDeckCards().getState(), this.deck);
         } catch (IOException e) {
 //            e.printStackTrace();
             Log.e(TAG, e.getMessage());

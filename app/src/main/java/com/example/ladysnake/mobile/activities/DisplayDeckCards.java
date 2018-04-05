@@ -51,6 +51,8 @@ public class DisplayDeckCards extends AppCompatActivity {
     protected State state;
     protected Deck deck;
 
+    public State getState(){ return state; }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,11 +79,12 @@ public class DisplayDeckCards extends AppCompatActivity {
         setupView(this.state, this.deck);
     }
 
-    protected void setupView(@NonNull State state, @NonNull Deck deck){
+    public void setupView(@NonNull State state, @NonNull Deck deck){
         state.getTextView().setText(deck.getName());
 
         DeckCardsAdapter adapter = new DeckCardsAdapter(this, R.layout.list_item_deck_edit, deck.getCards());
         adapter.setDeck(deck);
+        adapter.setDisplayDeckCards(this);
         state.getListView().setAdapter(adapter);
     }
 }
